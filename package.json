@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/dermio/tasks-and-treasures-API.git"
   },
-  "author": "dermio",
+  "author": "Davy Ermio",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.3",
