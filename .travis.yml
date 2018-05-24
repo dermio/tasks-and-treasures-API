@@ -1,0 +1,11 @@
+language: node_js
+node_js: node
+services:
+- mongodb
+deploy:
+  provider: heroku
+  api_key:
+    secure: kGez5/tHDY53ogR403GOgi1cfLwBLUwD3+Bygz3ZuqiYFcMiMU8vhBz+9MnhV8qfhOgvbUSQphhfPLhxNlKo9tV+KB/jRqsGrjVxQXZsPnovHyRMAsb0fVP8OUrxSCeRDfcar9bor8J7x9/h8xaF+rqUwFOF874HnsNZwrmucBWwwWqMjQOowf+zJn6F1GeykNCEFwwDPy2A4WLSCH3c6b1Hl2qU4F7OMwh9SgbIgFXPTy5Y3FROSVZh75/yCI5hgNAnis/Jaf8w+tuv292rZ0bogHt02OyQaVyO5uH/X0aY1eXK0S5UlYFuHFQzNbLIRAbjoCyxEBZKWyjTwndGj1xzXGd6S/wcG/eAgHTeDNZmWAAtGMV2gwph7DFj0TNt2YxdLkAe9RJ1ypae+enx0Y4PbIojKo348nRnZK8eP27vBK49/nPYI0rQOFyZF6RIHmmk5vuXbnUw6CfCK+WFO2BiMFRUjIvW5f+a2wc6H3+zgDX5NS9YxTAx53Yf3eVEm39S6V47p+vYyvzkhM0bJOPUgW0TBDTPrVECsC4cWF+sVM52RwosP2P5CANR8xqkmxtkNfYGmsEm7R+MzHnJZj/TLkHSLYxJl4xlDO+y+3+hCZW9Dqk2s+miMm0w/Amu87y/Y8pqZooKOxPFtWnGe6m/YfmL0iMHLrgOMUDfX5k=
+  app: tasks-and-treasures-api
+  on:
+    repo: dermio/tasks-and-treasures-API
