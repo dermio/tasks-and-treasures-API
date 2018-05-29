@@ -1,5 +1,5 @@
 exports.DATABASE_URL = process.env.DATABASE_URL ||
                        "mongodb://localhost/tasks-and-treasures-app";
 exports.TEST_DATABASE_URL = process.env.TEST_DATABASE_URL ||
-                            "mongodb://localhost/tasks-and-treasures-app";
+                            "mongodb://localhost/test-tasks-and-treasures-app";
 exports.PORT = process.env.PORT || 8080;
