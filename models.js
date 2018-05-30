@@ -24,6 +24,6 @@ const childUser = mongoose.Schema({
   password: {type: String, required: true}, // password stored as HASH
   name: {type: String, required: true},
   familyCode: {type: String, required: true},
-  completed_tasks: [String] // not required, list might be empty
+  completed_tasks: [String], // not required, list might be empty
   approved: {type: Boolean, required: true}
 });
