@@ -27,3 +27,8 @@ const childUser = mongoose.Schema({
   completed_tasks: [String], // not required, list might be empty
   approved: {type: Boolean, required: true}
 });
+
+
+const Task = mongoose.model("Task", taskSchema);
+
+module.exports = { Task };
