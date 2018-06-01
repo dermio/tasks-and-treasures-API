@@ -29,6 +29,30 @@ app.get("/api/tasks/:familyCode", (req, res) => {
       })
 });
 
+// POST task, for Parent User
+app.post("/api/task", jsonParser, (req, res) => {
+  console.log(req.body);
+  let requiredFields = ["taskName", "familyCode"];
+
+  for (let i = 0; i < requiredFields.length; i++) {
+    let field = requiredFields[i];
+    if (!(field in req.body)) {
+      let message = `Missing \`${field}\`in request body`;
+      console.error(message);
+      return res.status(400).send(message);
+    }
+  }
+
+  // Need to check family code
+
+  Task.create({
+        taskName: req.body.taskName,
+        familyCode: req.body.familyCode
+      })
+      .then(task => res.status(201).json());
+});
+
+
 /* closeServer needs access to a server object, but that only
 gets created when `runServer` runs, so we declare `server` here
 and then assign a value to it in run */
