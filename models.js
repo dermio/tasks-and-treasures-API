@@ -29,6 +29,16 @@ const childUser = mongoose.Schema({
 });
 
 
-const Task = mongoose.model("Task", taskSchema);
+// taskSchema.methods.apiRepr = function () {
+//   return {
+//       id: this.id,
+//       taskName: this.taskName,
+//       familyCode: this.familyCode
+//   };
+// };
+
+
+
+const Task = mongoose.model("tasks", taskSchema);
 
 module.exports = { Task };
