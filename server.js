@@ -19,15 +19,12 @@ app.get("/api/endpoint_works", function (req, res) {
 });
 
 
-//GET all tasks, for Parent user with particular family code.
+// GET all tasks, for Parent and Child user with particular family code.
 app.get("/api/tasks/:familyCode", (req, res) => {
   Task.find({familyCode: req.params.familyCode})
       .then((task) => {
-        // console.log(task);
-        // res.json(task);
-        // res.json({ok: true});
-
-        //res.json(task.map(task => task.apiRepr()));
+        console.log(task);
+        // res.json(task.map(task => task.apiRepr()));
         res.json(task);
       })
 });
