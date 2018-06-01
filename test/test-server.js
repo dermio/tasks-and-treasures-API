@@ -20,6 +20,15 @@ chai.use(chaiHttp);
 //   });
 // });
 
+/* this function deletes the entire database.
+we'll call it in an `afterEach` block below
+to ensure data from one test does not stick
+around for next one */
+function tearDownDb() {
+  console.warn('Deleting database');
+  return mongoose.connection.dropDatabase();
+}
+
 describe("GET endpoint", function () {
   it("should return all tasks", function () {
     return chai.request(app)
