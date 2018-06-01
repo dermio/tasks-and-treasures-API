@@ -14,10 +14,23 @@ app.use(
   cors( {origin: CLIENT_ORIGIN} )
 );
 
-app.get("/api/*", function (req, res) {
+app.get("/api/endpoint_works", function (req, res) {
   res.json({ ok: true });
 });
 
+
+//GET all tasks, for Parent user with particular family code.
+app.get("/api/tasks/:familyCode", (req, res) => {
+  Task.find({familyCode: req.params.familyCode})
+      .then((task) => {
+        // console.log(task);
+        // res.json(task);
+        // res.json({ok: true});
+
+        //res.json(task.map(task => task.apiRepr()));
+        res.json(task);
+      })
+});
 
 /* closeServer needs access to a server object, but that only
 gets created when `runServer` runs, so we declare `server` here
