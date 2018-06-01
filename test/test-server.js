@@ -9,10 +9,21 @@ const { TEST_DATABASE_URL } = require("../config");
 const should = chai.should();
 chai.use(chaiHttp);
 
-describe("API", function () {
-  it("should respond with status 200 on GET requests", function () {
+// describe("API", function () {
+//   it("should respond with status 200 on GET requests", function () {
+//     return chai.request(app)
+//               .get("/api/shoryuken")
+//               .then(function (res) {
+//                 res.should.have.status(200);
+//                 res.should.be.json;
+//               });
+//   });
+// });
+
+describe("GET endpoint", function () {
+  it("should return all tasks", function () {
     return chai.request(app)
-              .get("/api/shoryuken")
+              .get("/api/task")
               .then(function (res) {
                 res.should.have.status(200);
                 res.should.be.json;
