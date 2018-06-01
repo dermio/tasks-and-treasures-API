@@ -19,15 +19,6 @@ app.get("/api/*", function (req, res) {
 });
 
 
-/* old
-app.listen(PORT, (req, res) => {
-  console.log(`Listening on port ${PORT}`);
-});
-
-module.exports = {app};
-*/
-
-
 /* closeServer needs access to a server object, but that only
 gets created when `runServer` runs, so we declare `server` here
 and then assign a value to it in run */
