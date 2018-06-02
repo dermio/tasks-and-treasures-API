@@ -8,7 +8,7 @@ const { Task } = require("../models");
 
 
 // GET all tasks, for Parent and Child user with particular family code.
-app.get("/:familyCode", (req, res) => {
+router.get("/:familyCode", (req, res) => {
   Task.find({ familyCode: req.params.familyCode })
       .then((tasks) => {
         res.json(tasks.map(task => task.serialize()));
@@ -16,7 +16,7 @@ app.get("/:familyCode", (req, res) => {
 });
 
 // POST task, for Parent User
-app.post("/", jsonParser, (req, res) => {
+router.post("/", jsonParser, (req, res) => {
   //console.log(req.body);
   let requiredFields = ["taskName", "familyCode"];
 
@@ -41,7 +41,7 @@ app.post("/", jsonParser, (req, res) => {
 });
 
 // DELETE task, for Parent User
-app.delete("/:id", (req, res) => {
+router.delete("/:id", (req, res) => {
   Task.findByIdAndRemove(req.params.id)
       .then(() => {
         console.log(`Deleted task with id \`${req.params.id}\``);
