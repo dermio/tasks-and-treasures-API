@@ -82,14 +82,12 @@ describe("Tasks API resource", function () {
   describe("POST endpoint", function () {
     it("should add a new task", function () {
       let newTask = generateTaskData();
-      console.info(newTask);
 
       return chai
         .request(app)
         .post("/api/task")
         .send(newTask)
         .then(function (res) {
-          console.log("RESPONSE", res.body);
           res.should.have.status(201);
           res.should.be.json;
           res.should.be.a("object");
