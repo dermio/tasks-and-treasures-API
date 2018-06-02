@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const faker = require("faker");
 
 const { app, runServer, closeServer } = require("../server");
-const { Task } = require("../models");
+const { Task } = require("../models/taskModel");
 const { TEST_DATABASE_URL } = require("../config");
 
 const should = chai.should();
