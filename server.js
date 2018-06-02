@@ -20,9 +20,8 @@ app.get("/api/tasks/:familyCode", (req, res) => {
   Task.find({ familyCode: req.params.familyCode })
       .then((tasks) => {
         console.log(tasks);
-        // res.json(task.map(task => task.apiRepr()));
-        res.json(tasks);
-      })
+        res.json(tasks.map(task => task.serialize()));
+      });
 });
 
 // POST task, for Parent User
