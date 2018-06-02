@@ -18,16 +18,16 @@ app.use(
 // GET all tasks, for Parent and Child user with particular family code.
 app.get("/api/tasks/:familyCode", (req, res) => {
   Task.find({ familyCode: req.params.familyCode })
-      .then((task) => {
-        console.log(task);
+      .then((tasks) => {
+        console.log(tasks);
         // res.json(task.map(task => task.apiRepr()));
-        res.json(task);
+        res.json(tasks);
       })
 });
 
 // POST task, for Parent User
 app.post("/api/task", jsonParser, (req, res) => {
-  console.log(req.body);
+  //console.log(req.body);
   let requiredFields = ["taskName", "familyCode"];
 
   for (let i = 0; i < requiredFields.length; i++) {
