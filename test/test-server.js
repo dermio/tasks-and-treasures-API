@@ -85,7 +85,7 @@ describe("Tasks API resource", function () {
 
       return chai
         .request(app)
-        .post("/api/task")
+        .post("/api/tasks")
         .send(newTask)
         .then(function (res) {
           res.should.have.status(201);
