@@ -85,7 +85,7 @@ describe("Tasks API resource", function () {
 
       return chai
         .request(app)
-        .post("/api/task")
+        .post("/api/tasks")
         .send(newTask)
         .then(function (res) {
           res.should.have.status(201);
@@ -103,6 +103,27 @@ describe("Tasks API resource", function () {
         });
     });
   });
+
+  describe("DELETE endpoint", function () {
+    it("should delete a task", function () {
+      let task;
+
+      return Task
+        .findOne()
+        .then(function (_task) {
+          task = _task;
+          return chai.request(app).delete(`/api/tasks/${task.id}`);
+        })
+        .then(function (res) {
+          res.should.have.status(204);
+        })
+        .then(function (_task) {
+          should.not.exist(_task);
+        });
+    });
+  });
+
+
 
 });
 
