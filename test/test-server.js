@@ -110,6 +110,10 @@ describe("Tasks API resource", function () {
           res.body.familyCode.should.equal(newTask.familyCode);
           return Task.findById(res.body.id);
         })
+        .then(function (task) { // task is a single doc from Mongo
+          task.taskName.should.equal(newTask.taskName);
+          task.familyCode.should.equal(newTask.familyCode);
+        });
     });
   });
 
