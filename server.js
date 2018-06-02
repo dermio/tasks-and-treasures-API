@@ -19,7 +19,6 @@ app.use(
 app.get("/api/tasks/:familyCode", (req, res) => {
   Task.find({ familyCode: req.params.familyCode })
       .then((tasks) => {
-        console.log(tasks);
         res.json(tasks.map(task => task.serialize()));
       });
 });
