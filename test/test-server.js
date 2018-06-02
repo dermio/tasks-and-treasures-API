@@ -77,6 +77,11 @@ describe("Tasks API resource", function () {
           res = _res;
           res.should.have.status(200);
           res.should.be.json;
+          res.body.should.be.a("array");
+          res.body.forEach(task => {
+            task.should.be.a("object");
+            task.should.include.keys("taskName", "familyCode");
+          });
           return Task.count();
         })
         .then(function (count) {
