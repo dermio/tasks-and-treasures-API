@@ -33,7 +33,7 @@ function seedTasks() {
 function generateTaskData() {
   return {
     taskName: faker.commerce.productName(),
-    familyCode: "schwarzenegger8080"
+    familyCode: "schwarzeneggerT800"
   };
 }
 
@@ -62,7 +62,7 @@ describe("Tasks API resource", function () {
     it("should return all tasks", function () {
       let res;
       return chai.request(app)
-        .get("/api/tasks/schwarzenegger8080")
+        .get("/api/tasks/schwarzeneggerT800")
         .then(function (_res) {
           res = _res;
           res.should.have.status(200);
