@@ -21,7 +21,6 @@ function tearDownDb() {
 }
 
 function seedTasks() {
-  console.info("seeding data")
   let tasksArr = [];
   for (let i = 0; i < 10; i++) {
     tasksArr.push(generateTaskData());
