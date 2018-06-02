@@ -43,7 +43,7 @@ function seedTasks() {
 function generateData() {
   return {
     taskName: faker.commerce.productName(),
-    familyCode: faker.address.countryCode()
+    familyCode: "schwarzenegger8080"
   };
 }
 
@@ -70,13 +70,21 @@ describe("Tasks API resource", function () {
 
   describe("GET endpoint", function () {
     it("should return all tasks", function () {
+      let res;
       return chai.request(app)
-        .get("/api/tasks/:familyCode")
-        .then(function (res) {
+        .get("/api/tasks/schwarzenegger8080")
+        .then(function (_res) {
+          res = _res;
           res.should.have.status(200);
           res.should.be.json;
+          return Task.count();
+        })
+        .then(function (count) {
+          res.body.length.should.equal(count);
         });
     });
+    
   });
+
 });
 
