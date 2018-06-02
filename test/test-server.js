@@ -94,7 +94,6 @@ describe("Tasks API resource", function () {
     it("should add a new task", function () {
       let newTask = generateTaskData();
       console.info(newTask);
-      let mostRecentTask;
 
       return chai
         .request(app)
