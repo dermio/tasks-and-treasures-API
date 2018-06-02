@@ -24,7 +24,7 @@ app.get("/api/tasks/:familyCode", (req, res) => {
 });
 
 // POST task, for Parent User
-app.post("/api/task", jsonParser, (req, res) => {
+app.post("/api/tasks", jsonParser, (req, res) => {
   //console.log(req.body);
   let requiredFields = ["taskName", "familyCode"];
 
@@ -49,7 +49,7 @@ app.post("/api/task", jsonParser, (req, res) => {
 });
 
 // DELETE task, for Parent User
-app.delete("/api/task/:id", (req, res) => {
+app.delete("/api/tasks/:id", (req, res) => {
   Task.findByIdAndRemove(req.params.id)
       .then(() => {
         console.log(`Deleted task with id \`${req.params.id}\``);
