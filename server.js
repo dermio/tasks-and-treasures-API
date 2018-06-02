@@ -11,13 +11,13 @@ const { Task } = require("./models");
 mongoose.Promise = global.Promise;
 
 app.use(
-  cors( {origin: CLIENT_ORIGIN} )
+  cors({ origin: CLIENT_ORIGIN })
 );
 
 
 // GET all tasks, for Parent and Child user with particular family code.
 app.get("/api/tasks/:familyCode", (req, res) => {
-  Task.find({familyCode: req.params.familyCode})
+  Task.find({ familyCode: req.params.familyCode })
       .then((task) => {
         console.log(task);
         // res.json(task.map(task => task.apiRepr()));
@@ -42,10 +42,10 @@ app.post("/api/task", jsonParser, (req, res) => {
   // Need to check family code
 
   Task.create({
-        taskName: req.body.taskName,
-        familyCode: req.body.familyCode
-      })
-      .then(task => res.status(201).json());
+    taskName: req.body.taskName,
+    familyCode: req.body.familyCode
+  })
+    .then(task => res.status(201).json());
 });
 
 
@@ -65,10 +65,10 @@ function runServer(databaseUrl, port = PORT) {
         console.log(`Your app is listening on port ${port}`);
         resolve();
       })
-      .on("error", err => {
-        mongoose.disconnect();
-        reject(err);
-      });
+        .on("error", err => {
+          mongoose.disconnect();
+          reject(err);
+        });
     });
   });
 }
