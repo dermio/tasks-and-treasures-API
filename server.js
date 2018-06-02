@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 
 const cors = require("cors");
 const { CLIENT_ORIGIN, PORT, DATABASE_URL } = require("./config");
-const { Task } = require("./models");
+const { Task } = require("./models/taskModel");
 
 const tasksRouter = require("./routers/tasksRouter");
 
