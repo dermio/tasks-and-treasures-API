@@ -8,57 +8,62 @@ const cors = require("cors");
 const { CLIENT_ORIGIN, PORT, DATABASE_URL } = require("./config");
 const { Task } = require("./models");
 
+const tasksRouter = require("./routers/tasksRouter");
+
 mongoose.Promise = global.Promise;
 
 app.use(
   cors({ origin: CLIENT_ORIGIN })
 );
 
+app.use("/api/tasks", tasksRouter);
 
-// GET all tasks, for Parent and Child user with particular family code.
-app.get("/api/tasks/:familyCode", (req, res) => {
-  Task.find({ familyCode: req.params.familyCode })
-      .then((tasks) => {
-        res.json(tasks.map(task => task.serialize()));
-      });
-});
 
-// POST task, for Parent User
-app.post("/api/tasks", jsonParser, (req, res) => {
-  //console.log(req.body);
-  let requiredFields = ["taskName", "familyCode"];
+// // GET all tasks, for Parent and Child user with particular family code.
+// app.get("/api/tasks/:familyCode", (req, res) => {
+//   Task.find({ familyCode: req.params.familyCode })
+//       .then((tasks) => {
+//         res.json(tasks.map(task => task.serialize()));
+//       });
+// });
 
-  for (let i = 0; i < requiredFields.length; i++) {
-    let field = requiredFields[i];
-    if (!(field in req.body)) {
-      let message = `Missing \`${field}\`in request body`;
-      console.error(message);
-      return res.status(400).send(message);
-    }
-  }
+// // POST task, for Parent User
+// app.post("/api/tasks", jsonParser, (req, res) => {
+//   //console.log(req.body);
+//   let requiredFields = ["taskName", "familyCode"];
 
-  Task.create({
-        taskName: req.body.taskName,
-        familyCode: req.body.familyCode
-      })
-      .then(task => res.status(201).json(task.serialize()))
-      .catch(err => {
-        console.error(err);
-        res.status(500).json({ message: "Internal server error" });
-      });
-});
+//   for (let i = 0; i < requiredFields.length; i++) {
+//     let field = requiredFields[i];
+//     if (!(field in req.body)) {
+//       let message = `Missing \`${field}\`in request body`;
+//       console.error(message);
+//       return res.status(400).send(message);
+//     }
+//   }
 
-// DELETE task, for Parent User
-app.delete("/api/tasks/:id", (req, res) => {
-  Task.findByIdAndRemove(req.params.id)
-      .then(() => {
-        console.log(`Deleted task with id \`${req.params.id}\``);
-        res.status(204).end();
-      })
-      .catch(err => {
-        res.status(500).json({message: "Internal server error"});
-      });
-});
+//   Task.create({
+//         taskName: req.body.taskName,
+//         familyCode: req.body.familyCode
+//       })
+//       .then(task => res.status(201).json(task.serialize()))
+//       .catch(err => {
+//         console.error(err);
+//         res.status(500).json({ message: "Internal server error" });
+//       });
+// });
+
+// // DELETE task, for Parent User
+// app.delete("/api/tasks/:id", (req, res) => {
+//   Task.findByIdAndRemove(req.params.id)
+//       .then(() => {
+//         console.log(`Deleted task with id \`${req.params.id}\``);
+//         res.status(204).end();
+//       })
+//       .catch(err => {
+//         res.status(500).json({message: "Internal server error"});
+//       });
+// });
+
 
 
 /* closeServer needs access to a server object, but that only
