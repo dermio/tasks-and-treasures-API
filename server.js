@@ -41,11 +41,16 @@ app.post("/api/task", jsonParser, (req, res) => {
 
   // Need to check family code
 
-  Task.create({
-    taskName: req.body.taskName,
-    familyCode: req.body.familyCode
-  })
-    .then(task => res.status(201).json());
+  Task
+    .create({
+      taskName: req.body.taskName,
+      familyCode: req.body.familyCode
+    })
+    .then(task => res.status(201).json())
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ message: "Internal server error" });
+    });
 });
 
 
