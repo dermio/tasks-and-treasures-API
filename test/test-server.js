@@ -1,6 +1,7 @@
 const chai = require("chai");
 const chaiHttp = require("chai-http");
 const mongoose = require("mongoose");
+const faker = require("faker");
 
 const { app, runServer, closeServer } = require("../server");
 const { Task } = require("../models");
@@ -29,36 +30,52 @@ function tearDownDb() {
   return mongoose.connection.dropDatabase();
 }
 
+function seedTasks() {
+  console.info("seeding data")
+  let tasksArr = [];
+  for (let i = 0; i < 10; i++) {
+    tasksArr.push(generateData());
+  }
+  return Task.insertMany(tasksArr);
+}
+
+
+function generateData() {
+  return {
+    taskName: faker.commerce.productName(),
+    familyCode: faker.address.countryCode()
+  };
+}
 
 describe("Tasks API resource", function () {
   // we need each of these hook functions to return a promise
   // otherwise we'd need to call a `done` callback. `runServer`,
   // `seedRestaurantData` and `tearDownDb` each return a promise,
   // so we return the value returned by these function calls.
-  before(function() {
+  before(function () {
     return runServer(TEST_DATABASE_URL);
   });
 
-  beforeEach(function() {
-
+  beforeEach(function () {
+    return seedTasks();
   });
 
-  afterEach(function() {
+  afterEach(function () {
     return tearDownDb();
   });
 
-  after(function() {
+  after(function () {
     return closeServer();
   });
 
   describe("GET endpoint", function () {
     it("should return all tasks", function () {
       return chai.request(app)
-                .get("/api/task")
-                .then(function (res) {
-                  res.should.have.status(200);
-                  res.should.be.json;
-                });
+        .get("/api/tasks/:familyCode")
+        .then(function (res) {
+          res.should.have.status(200);
+          res.should.be.json;
+        });
     });
   });
 });
