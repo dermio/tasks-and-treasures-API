@@ -29,17 +29,6 @@ function tearDownDb() {
   return mongoose.connection.dropDatabase();
 }
 
-describe("GET endpoint", function () {
-  it("should return all tasks", function () {
-    return chai.request(app)
-              .get("/api/task")
-              .then(function (res) {
-                res.should.have.status(200);
-                res.should.be.json;
-              });
-  });
-});
-
 
 describe("Tasks API resource", function () {
   // we need each of these hook functions to return a promise
@@ -60,6 +49,17 @@ describe("Tasks API resource", function () {
 
   after(function() {
     return closeServer();
+  });
+
+  describe("GET endpoint", function () {
+    it("should return all tasks", function () {
+      return chai.request(app)
+                .get("/api/task")
+                .then(function (res) {
+                  res.should.have.status(200);
+                  res.should.be.json;
+                });
+    });
   });
 });
 
