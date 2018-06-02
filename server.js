@@ -39,16 +39,15 @@ app.post("/api/task", jsonParser, (req, res) => {
     }
   }
 
-  Task
-    .create({
-      taskName: req.body.taskName,
-      familyCode: req.body.familyCode
-    })
-    .then(task => res.status(201).json(task.serialize()))
-    .catch(err => {
-      console.error(err);
-      res.status(500).json({ message: "Internal server error" });
-    });
+  Task.create({
+        taskName: req.body.taskName,
+        familyCode: req.body.familyCode
+      })
+      .then(task => res.status(201).json(task.serialize()))
+      .catch(err => {
+        console.error(err);
+        res.status(500).json({ message: "Internal server error" });
+      });
 });
 
 
