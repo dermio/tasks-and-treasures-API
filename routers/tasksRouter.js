@@ -4,7 +4,7 @@ const router = express.Router();
 const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json();
 
-const { Task } = require("../models");
+const { Task } = require("../models/taskModel");
 
 
 // GET all tasks, for Parent and Child user with particular family code.
