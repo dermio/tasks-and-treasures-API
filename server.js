@@ -48,6 +48,18 @@ app.post("/api/task", jsonParser, (req, res) => {
       });
 });
 
+// DELETE task, for Parent User
+app.delete("/api/task/:id", (req, res) => {
+  Task.findByIdAndRemove(req.params.id)
+      .then(() => {
+        console.log(`Deleted task with id \`${req.params.id}\``);
+        res.status(204).end();
+      })
+      .catch(err => {
+        res.status(500).json({message: "Internal server error"});
+      });
+});
+
 
 /* closeServer needs access to a server object, but that only
 gets created when `runServer` runs, so we declare `server` here
