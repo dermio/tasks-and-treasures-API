@@ -14,10 +14,6 @@ app.use(
   cors( {origin: CLIENT_ORIGIN} )
 );
 
-app.get("/api/endpoint_works", function (req, res) {
-  res.json({ ok: true });
-});
-
 
 // GET all tasks, for Parent and Child user with particular family code.
 app.get("/api/tasks/:familyCode", (req, res) => {
