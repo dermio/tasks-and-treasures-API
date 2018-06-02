@@ -34,13 +34,13 @@ function seedTasks() {
   console.info("seeding data")
   let tasksArr = [];
   for (let i = 0; i < 10; i++) {
-    tasksArr.push(generateData());
+    tasksArr.push(generateTaskData());
   }
   return Task.insertMany(tasksArr);
 }
 
 
-function generateData() {
+function generateTaskData() {
   return {
     taskName: faker.commerce.productName(),
     familyCode: "schwarzenegger8080"
@@ -88,7 +88,30 @@ describe("Tasks API resource", function () {
           res.body.length.should.equal(count);
         });
     });
+  });
 
+  describe("POST endpoint", function () {
+    it("should add a new task", function () {
+      let newTask = generateTaskData();
+      console.info(newTask);
+      let mostRecentTask;
+
+      return chai
+        .request(app)
+        .post("/api/task")
+        .send(newTask)
+        .then(function (res) {
+          console.log("RESPONSE", res.body);
+          res.should.have.status(201);
+          res.should.be.json;
+          res.should.be.a("object");
+          res.body.should.include.keys("taskName", "familyCode");
+          res.body.taskName.should.equal(newTask.taskName);
+          res.body.id.should.not.be.null;
+          res.body.familyCode.should.equal(newTask.familyCode);
+          return Task.findById(res.body.id);
+        })
+    });
   });
 
 });
