@@ -81,6 +81,31 @@ describe("Prizes API resource", function () {
     });
   });
 
+  describe("POST endpoint", function () {
+    it("should add a new prize", function () {
+      let newPrize = generatePrizeData();
+
+      return chai
+        .request(app)
+        .post("/api/prizes")
+        .send(newPrize)
+        .then(function (res) {
+          res.should.have.status(201);
+          res.should.be.json;
+          res.should.be.a("object");
+          res.body.should.include.keys("prizeName", "familyCode");
+          res.body.prizeName.should.equal(newPrize.prizeName);
+          res.body.id.should.not.be.null;
+          res.body.familyCode.should.equal(newPrize.familyCode);
+          return Prize.findById(res.body.id);
+        })
+        .then(function (prize) { // prize is a single doc from Mongo
+          prize.prizeName.should.equal(newPrize.prizeName);
+          prize.familyCode.should.equal(newPrize.familyCode);
+        });
+    });
+  });
+
 
 });
 
