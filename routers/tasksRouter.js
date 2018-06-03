@@ -82,8 +82,10 @@ router.put("/:id", jsonParser, (req, res) => {
     /* all key/value pairs in toUpdate will be updated
     -- that's what `$set` does */
     .findByIdAndUpdate(req.params.id, {$set: toUpdate})
-    // console.log(task); // the document with updated fields
-    .then(task => res.status(204).end())
+    .then(task => {
+      // console.log(task); // the document with updated fields
+      res.status(204).end();
+    })
     .catch(err => res.status(500).json( {message: "Internal server error"} ));
 });
 
