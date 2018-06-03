@@ -12,6 +12,10 @@ router.get("/:familyCode", (req, res) => {
   Task.find({ familyCode: req.params.familyCode })
       .then((tasks) => {
         res.json(tasks.map(task => task.serialize()));
+      })
+      .catch(err =>{
+        console.error(err);
+        res.status(500).json({error: "Internal server error"});
       });
 });
 
