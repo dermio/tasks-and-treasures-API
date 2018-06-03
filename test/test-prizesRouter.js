@@ -50,5 +50,29 @@ describe("Prizes API resource", function () {
     return closeServer();
   });
 
+  describe("GET endpoint", function () {
+    it("should return the prize", function () {
+      let res;
+      return chai.request(app)
+        .get("/api/prizes/schwarzeneggerT800")
+        .then(function (_res) {
+          res = _res;
+          res.should.have.status(200);
+          res.should.be.json;
+          res.body.should.be.a("array");
+          res.body.forEach(prize => {
+            prize.should.be.a("object");
+            prize.should.include.keys("prizeName", "familyCode");
+          });
+          return Prize.count();
+        })
+        .then(function (count) {
+          res.body.length.should.equal(count);
+        });
+    });
+  });
+
+
+
 });
 
