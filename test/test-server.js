@@ -5,6 +5,7 @@ const faker = require("faker");
 
 const { app, runServer, closeServer } = require("../server");
 const { Task } = require("../models/taskModel");
+const { Prize } = require("../models/prizeModel");
 const { TEST_DATABASE_URL } = require("../config");
 
 const should = chai.should();
@@ -27,7 +28,6 @@ function seedTasks() {
   }
   return Task.insertMany(tasksArr);
 }
-
 
 function generateTaskData() {
   return {
