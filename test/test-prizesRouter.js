@@ -29,6 +29,13 @@ function seedPrize() {
   return Prize.create(prize);
 }
 
+function generatePrizeData() {
+  return {
+    prizeName: faker.commerce.product(),
+    familyCode: "schwarzeneggerT800"
+  };
+}
+
 describe("Prizes API resource", function () {
   // we need each of these hook functions to return a promise
   // otherwise we'd need to call a `done` callback. `runServer`,
@@ -71,7 +78,6 @@ describe("Prizes API resource", function () {
         });
     });
   });
-
 
 
 });
