@@ -122,5 +122,41 @@ describe("Tasks API resource", function () {
     });
   });
 
+  describe("PUT endpoint", function () {
+    /* strategy:
+    1. Get an existing task from db
+    2. Make a PUT request to update that task
+    3. Prove task returned by request contains data we sent
+    4. Prove task in db is correctly updated */
+
+    it("should update fields you send over", function () {
+      let updateData = {
+        taskName: "plant trees"
+      };
+
+      return Task
+        .findOne()
+        .then(function (task) {
+          updateData.id = task.id;
+
+          /* make request then inspect it to make sure
+          it reflects the data that was sent */
+          return chai.request(app)
+            .put(`/api/tasks/${task.id}`)
+            .send(updateData);
+        })
+        .then(function (res) {
+          res.should.have.status(204);
+          // return the document with correct Id
+          return Task.findById(updateData.id);
+        })
+        .then(function (task) {
+          /* task is the returned document from Mongo
+          with the updated values */
+          // console.log(task);
+          task.taskName.should.equal(updateData.taskName);
+        });
+    });
+  });
 
 });
