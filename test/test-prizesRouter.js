@@ -21,12 +21,14 @@ function tearDownDb() {
 }
 
 // Only one Prize is awarded to the child(ren)
-function seedPrize() {
-  let prize = {
-    prizeName: faker.commerce.product(),
-    familyCode: "schwarzeneggerT800"
-  };
-  return Prize.create(prize);
+function seedPrizes() {
+  /* Might not need array and insertMany().
+  If only create one prize use create(). */
+  let prizesArr = [];
+  for (let i = 0; i < 1; i++) {
+    prizesArr.push(generatePrizeData());
+  }
+  return Prize.insertMany(prizesArr);
 }
 
 function generatePrizeData() {
