@@ -106,6 +106,25 @@ describe("Prizes API resource", function () {
     });
   });
 
+  describe("DELETE endpoint", function () {
+    it("should delete a prize", function () {
+      let prize;
+
+      return Prize
+        .findOne()
+        .then(function (_prize) {
+          prize = _prize;
+          return chai.request(app).delete(`/api/prizes/${prize.id}`);
+        })
+        .then(function (res) {
+          res.should.have.status(204);
+        })
+        .then(function (_prize) {
+          should.not.exist(_prize);
+        });
+    });
+  });
+
 
 });
 
