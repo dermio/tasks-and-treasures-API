@@ -49,4 +49,16 @@ router.post("/", jsonParser, (req, res) => {
       });
 });
 
+// DELETE prize, for Parent User
+router.delete("/:id", (req, res) => {
+  Prize.findByIdAndRemove(req.params.id)
+      .then(() => {
+        console.log(`Deleted prize with id \`${req.params.id}\``);
+        res.status(204).end();
+      })
+      .catch(err => {
+        res.status(500).json({message: "Internal server error"});
+      });
+});
+
 module.exports = router;
