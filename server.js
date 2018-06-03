@@ -4,15 +4,16 @@ const mongoose = require("mongoose");
 
 const cors = require("cors");
 const { CLIENT_ORIGIN, PORT, DATABASE_URL } = require("./config");
-const { Task } = require("./models/taskModel");
 
 const tasksRouter = require("./routers/tasksRouter");
+const prizesRouter = require("./routers/prizesRouter");
 
 mongoose.Promise = global.Promise;
 
 app.use( cors({ origin: CLIENT_ORIGIN }) );
 
 app.use("/api/tasks", tasksRouter);
+app.use("/api/prizes", prizesRouter);
 
 
 /* closeServer needs access to a server object, but that only

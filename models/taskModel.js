@@ -7,9 +7,9 @@ const taskSchema = mongoose.Schema({
 
 taskSchema.methods.serialize = function () {
   return {
-      id: this.id,
-      taskName: this.taskName,
-      familyCode: this.familyCode
+    id: this.id,
+    taskName: this.taskName,
+    familyCode: this.familyCode
   };
 };
 

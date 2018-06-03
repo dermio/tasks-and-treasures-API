@@ -5,7 +5,6 @@ const faker = require("faker");
 
 const { app, runServer, closeServer } = require("../server");
 const { Task } = require("../models/taskModel");
-const { Prize } = require("../models/prizeModel");
 const { TEST_DATABASE_URL } = require("../config");
 
 const should = chai.should();
@@ -21,10 +20,6 @@ function tearDownDb() {
   return mongoose.connection.dropDatabase();
 }
 
-
-/****************************
- * Test for Tasks
-****************************/
 function seedTasks() {
   let tasksArr = [];
   for (let i = 0; i < 10; i++) {
@@ -43,7 +38,7 @@ function generateTaskData() {
 describe("Tasks API resource", function () {
   // we need each of these hook functions to return a promise
   // otherwise we'd need to call a `done` callback. `runServer`,
-  // `seedRestaurantData` and `tearDownDb` each return a promise,
+  // `seedTasks` and `tearDownDb` each return a promise,
   // so we return the value returned by these function calls.
   before(function () {
     return runServer(TEST_DATABASE_URL);
@@ -128,20 +123,4 @@ describe("Tasks API resource", function () {
   });
 
 
-
 });
-
-
-/****************************
- * Test for Prizes
-****************************/
-
-// Only one Prize is awarded to the child(ren)
-function seedPrize() {
-  let prize = {
-    prizeName: faker.commerce.product(),
-    familyCode: "schwarzeneggerT800"
-  };
-  return Prize.create(prize);
-}
-
