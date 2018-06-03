@@ -21,6 +21,10 @@ function tearDownDb() {
   return mongoose.connection.dropDatabase();
 }
 
+
+/****************************
+ * Test for Tasks
+****************************/
 function seedTasks() {
   let tasksArr = [];
   for (let i = 0; i < 10; i++) {
@@ -126,4 +130,18 @@ describe("Tasks API resource", function () {
 
 
 });
+
+
+/****************************
+ * Test for Prizes
+****************************/
+
+// Only one Prize is awarded to the child(ren)
+function seedPrize() {
+  let prize = {
+    prizeName: faker.commerce.product(),
+    familyCode: "schwarzeneggerT800"
+  };
+  return Prize.create(prize);
+}
 
