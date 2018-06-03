@@ -20,4 +20,11 @@ function tearDownDb() {
   return mongoose.connection.dropDatabase();
 }
 
-
+// Only one Prize is awarded to the child(ren)
+function seedPrize() {
+  let prize = {
+    prizeName: faker.commerce.product(),
+    familyCode: "schwarzeneggerT800"
+  };
+  return Prize.create(prize);
+}
