@@ -21,9 +21,9 @@ app.use("/api/prizes", prizesRouter);
 ****************************/
 
 const morgan = require("morgan");
-// const session = require("express-session");
+const session = require("express-session");
 const bodyParser = require("body-parser");
-// const cookieParser = require("cookie-parser");
+const cookieParser = require("cookie-parser");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const expressValidator = require("express-validator");
