@@ -16,6 +16,29 @@ app.use("/api/tasks", tasksRouter);
 app.use("/api/prizes", prizesRouter);
 
 
+/****************************
+ * Related to Auth
+****************************/
+
+const morgan = require("morgan");
+// const session = require("express-session");
+const bodyParser = require("body-parser");
+// const cookieParser = require("cookie-parser");
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+const expressValidator = require("express-validator");
+const bcrypt = require("bcryptjs");
+const path = require("path");
+const flash = require("connect-flash");
+
+const urlencodedParser = bodyParser.urlencoded({ extended: false });
+const jsonParser = bodyParser.json();
+
+/****************************
+ * Related to Auth
+****************************/
+
+
 /* closeServer needs access to a server object, but that only
 gets created when `runServer` runs, so we declare `server` here
 and then assign a value to it in run */
