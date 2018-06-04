@@ -7,3 +7,7 @@ const jsonParser = bodyParser.json();
 const { User } = require("../models/userModel");
 
 
+/*
+Add User router CRUD routes after finishing
+registerRouter and loginRouter
+*/
