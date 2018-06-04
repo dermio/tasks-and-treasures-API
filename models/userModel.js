@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
 const userSchema = mongoose.Schema({
   role: {type: String, required: true},
@@ -7,7 +8,10 @@ const userSchema = mongoose.Schema({
   name: {type: String, required: true},
   familyCode: {type: String, required: true},
   completedTasks: [String], // not required, for Child user
-  approved: {type: Boolean} // not required, for Child user
+  approved: {type: Boolean}, // not required, for Child user
+
+  email: {type: String, unique: true, required: true},
+  password: {type: String, required: true},
 });
 
 userSchema.methods.serialize = function () {
@@ -20,8 +24,20 @@ userSchema.methods.serialize = function () {
     familyCode: this.familyCode,
     completedTasks: this.completedTasks,
     approved: this.approved
+
+    // email: this.email
   };
 };
+
+// Auth code
+userSchema.methods.generateHash = function (password) {
+  return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null);
+};
+
+userSchema.methods.validPassword = function (password) {
+  return bcrypt.compareSync(password, this.password);
+};
+
 
 const User = mongoose.model("users", userSchema);
 
