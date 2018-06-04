@@ -125,6 +125,41 @@ describe("Prizes API resource", function () {
     });
   });
 
+  describe("PUT endpoint", function () {
+    /* strategy:
+    1. Get an existing prize from db
+    2. Make a PUT request to update that prize
+    3. Prove prize returned by request contains data we sent
+    4. Prove prize in db is correctly updated */
+
+    it("should update fields you send over", function () {
+      let updateData = {
+        prizeName: "plant trees"
+      };
+
+      return Prize
+        .findOne()
+        .then(function (prize) {
+          updateData.id = prize.id;
+
+          /* make request then inspect it to make sure
+          it reflects the data that was sent */
+          return chai.request(app)
+            .put(`/api/prizes/${prize.id}`)
+            .send(updateData);
+        })
+        .then(function (res) {
+          res.should.have.status(204);
+          // return the document with correct Id
+          return Prize.findById(updateData.id);
+        })
+        .then(function (prize) {
+          /* prize is the returned document from Mongo
+          with the updated values */
+          // console.log(prize);
+          prize.prizeName.should.equal(updateData.prizeName);
+        });
+    });
+  });
 
 });
-
