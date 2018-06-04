@@ -61,4 +61,37 @@ router.delete("/:id", (req, res) => {
       });
 });
 
+// PUT prize, for Parent User
+router.put("/:id", jsonParser, (req, res) => {
+  // ensure that the id in the request path and the one in request body match
+  if (!(req.params.id && req.body.id && req.params.id === req.body.id)) {
+    let message = `Request path id (${req.params.id}) and ` +
+                  `request body id (${req.body.id}) must match`;
+    console.error(message);
+    res.status(400).json( {message: message} );
+  }
+
+  /* we only support a subset of fields being updateable.
+  if the user sent over any of the updatableFields,
+  we udpate those values in document */
+  let toUpdate = {};
+  let updateableFields = ["prizeName"]; // update familyCode?
+
+  updateableFields.forEach(field => {
+    if (field in req.body) {
+      toUpdate[field] = req.body[field];
+    }
+  });
+
+  Prize
+    /* all key/value pairs in toUpdate will be updated
+    -- that's what `$set` does */
+    .findByIdAndUpdate(req.params.id, {$set: toUpdate})
+    .then(prize => {
+      // console.log(prize); // the document with updated fields
+      res.status(204).end();
+    })
+    .catch(err => res.status(500).json( {message: "Internal server error"} ));
+});
+
 module.exports = router;
