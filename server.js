@@ -3,7 +3,7 @@ const app = express();
 const mongoose = require("mongoose");
 
 const cors = require("cors");
-const { CLIENT_ORIGIN, PORT, DATABASE_URL } = require("./config");
+const { CLIENT_ORIGIN, PORT, DATABASE_URL, SECRET } = require("./config");
 
 const tasksRouter = require("./routers/tasksRouter");
 const prizesRouter = require("./routers/prizesRouter");
@@ -77,8 +77,8 @@ app.use(passport.session());
 app.use(morgan("common"));
 
 // Routers and modules
-const loginRouter = require("./routes/loginRouter");
-const registerRouter = require("./routes/registerRouter");
+const loginRouter = require("./routers/loginRouter");
+const registerRouter = require("./routers/registerRouter");
 
 app.use("/login", loginRouter);
 app.use("/register", registerRouter);
