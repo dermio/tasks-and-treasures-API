@@ -6,7 +6,7 @@ const { matchedData, sanitize } = require("express-validator/filter");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 
-const { User } = require("../models/user");
+const { User } = require("../models/userModel");
 
 const router = express.Router();
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
