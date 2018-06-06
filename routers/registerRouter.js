@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const { check, validationResult } = require("express-validator/check");
 const { matchedData, sanitize } = require("express-validator/filter");
-const flash = require("connect-flash");
+//const flash = require("connect-flash");
 
 const { User } = require("../models/userModel");
 
@@ -30,23 +30,34 @@ router.post("/", (req, res) => {
   const errors = req.validationErrors();
 
   if (errors) {
-    res.render("register", {
-      errors
-    });
+    // If there errors res.status(whatever errorish thing is).send(errors)
   } else {
-    const newUser = new User();
+    /* const newUser = new User();
     newUser.name = name;
     newUser.email = email;
-    newUser.password = newUser.generateHash(password);
+    newUser.password = newUser.generateHash(password); */
+    const newUser = {
+      role: '',
+      ...,
+      password = User.generateHash(password)
+    }
 
     User.find({ email }).then(user => {
       // Checks if user already exists
       if (user.length !== 0) {
-        req.flash("error_msg", "Username Already Exists");
-        res.redirect("/register");
+        /* req.flash("error_msg", "Username Already Exists");
+        res.redirect("/register"); */
+
+        // send this message
+        {
+          success: false,
+          msg: 'User Exists'
+        }
+        // User Exists res.status(whatever errorish thing is).send(msg)
       } else {
         User.create(newUser);
-        req.flash("success_msg", "Success, You may now login");
+        /* req.flash("success_msg", "Success, You may now login"); */
+
         res.redirect("/login");
       }
     });
