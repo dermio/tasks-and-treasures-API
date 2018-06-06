@@ -38,9 +38,9 @@ router.post("/", (req, res) => {
     newUser.password = newUser.generateHash(password); */
     const newUser = {
       role: '',
-      ...,
-      password = User.generateHash(password)
-    }
+      // code
+      password: User.generateHash(password)
+    };
 
     User.find({ email }).then(user => {
       // Checks if user already exists
@@ -49,10 +49,10 @@ router.post("/", (req, res) => {
         res.redirect("/register"); */
 
         // send this message
-        {
+        const message = {
           success: false,
           msg: 'User Exists'
-        }
+        };
         // User Exists res.status(whatever errorish thing is).send(msg)
       } else {
         User.create(newUser);
