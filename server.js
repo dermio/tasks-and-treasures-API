@@ -76,12 +76,12 @@ app.use(passport.session());
 // Morgan logging middleware
 app.use(morgan("common"));
 
-// Routers and modules
-const loginRouter = require("./routers/loginRouter");
+// Routers and modules: Chris K comment out
+/* const loginRouter = require("./routers/loginRouter");
 const registerRouter = require("./routers/registerRouter");
 
 app.use("/login", loginRouter);
-app.use("/register", registerRouter);
+app.use("/register", registerRouter); */
 
 // Checks to see if user is authenticated to access protected routes
 function isLoggedIn(req, res, next) {
@@ -97,7 +97,7 @@ function isLoggedIn(req, res, next) {
 app.get("/", (req, res) => {
 	res.redirect("/login");
 });
-// Login Screen
+/* // Login Screen: Chris K comment out
 app.get("/login", (req, res) => {
 	res.sendFile("public/login.html", { root: __dirname });
 });
@@ -107,7 +107,7 @@ app.get("/register", (req, res) => {
 });
 app.get("/auth", isLoggedIn, (req, res) => {
 	res.sendFile("public/auth.html", { root: __dirname });
-});
+}); */
 
 /****************************
  * Related to Auth
