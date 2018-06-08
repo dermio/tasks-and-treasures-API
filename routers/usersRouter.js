@@ -16,7 +16,9 @@ registerRouter and loginRouter
 // Post to register a new user
 // Unprotected route
 router.post("/", jsonParser, (req, res) => {
-  const requiredFields = ["userName", "password"];
+  const requiredFields = [
+    "userName", "password", "role", "name", "familyCode", "email"
+  ];
   const missingField = requiredFields.find(field => !(field in req.body));
 
   if (missingField) {
