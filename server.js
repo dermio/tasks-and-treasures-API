@@ -13,6 +13,10 @@ const prizesRouter = require("./routers/prizesRouter");
 
 mongoose.Promise = global.Promise;
 
+// Logging
+app.use(morgan("common"));
+
+// CORS
 app.use( cors({ origin: CLIENT_ORIGIN }) );
 
 app.use("/api/tasks", tasksRouter);
