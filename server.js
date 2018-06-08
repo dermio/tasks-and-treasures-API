@@ -11,6 +11,8 @@ const { CLIENT_ORIGIN, PORT, DATABASE_URL, SECRET } = require("./config");
 const tasksRouter = require("./routers/tasksRouter");
 const prizesRouter = require("./routers/prizesRouter");
 
+const usersRouter = require("./routers/usersRouter");
+
 mongoose.Promise = global.Promise;
 
 // Logging
