@@ -1,68 +1,152 @@
 const express = require("express");
-const mongoose = require("mongoose");
-const { check, validationResult } = require("express-validator/check");
-const { matchedData, sanitize } = require("express-validator/filter");
-//const flash = require("connect-flash");
+const router = express.Router();
+
+const bodyParser = require("body-parser");
+const jsonParser = bodyParser.json();
 
 const { User } = require("../models/userModel");
 
-const router = express.Router();
+
+/*
+Add User router CRUD routes after finishing
+registerRouter and loginRouter
+*/
 
 
-// Registers a new user in the database
-router.post("/", (req, res) => {
-  const name = req.body.name;
-  const email = req.body.email;
-  const password = req.body.password;
+// Post to register a new user
+// Unprotected route
+router.post("/", jsonParser, (req, res) => {
+  const requiredFields = [
+    "userName", "password", "role", "name", "familyCode", "email"
+  ];
+  const missingField = requiredFields.find(field => !(field in req.body));
 
-  // Validation
-  req.checkBody("name", "Name is required").notEmpty();
-  req.checkBody("email", "Email is required").notEmpty();
-  req.checkBody("email", "Must have a valid email").isEmail();
-  req.checkBody("password", "Password is required").notEmpty();
-  req
-    .checkBody("password", "Password must be between 5 and 72 characters long")
-    .isLength({ min: 5, max: 72 });
-  req
-    .checkBody("password2", "Passwords do not match")
-    .equals(req.body.password);
-
-  const errors = req.validationErrors();
-
-  if (errors) {
-    // If there errors res.status(whatever errorish thing is).send(errors)
-  } else {
-    /* const newUser = new User();
-    newUser.name = name;
-    newUser.email = email;
-    newUser.password = newUser.generateHash(password); */
-    const newUser = {
-      role: '',
-      // code
-      password: User.generateHash(password)
-    };
-
-    User.find({ email }).then(user => {
-      // Checks if user already exists
-      if (user.length !== 0) {
-        /* req.flash("error_msg", "Username Already Exists");
-        res.redirect("/register"); */
-
-        // send this message
-        const message = {
-          success: false,
-          msg: 'User Exists'
-        };
-        // User Exists res.status(whatever errorish thing is).send(msg)
-      } else {
-        User.create(newUser);
-        /* req.flash("success_msg", "Success, You may now login"); */
-
-        res.redirect("/login");
-      }
+  if (missingField) {
+    return res.status(422).json({
+      code: 422,
+      reason: "ValidationError",
+      message: "Missing field",
+      location: missingField
     });
   }
 
+  const stringFields = ["userName", "password"];
+  const nonStringField = stringFields.find(
+    field => field in req.body && typeof req.body[field] !== "string"
+  );
+
+  if (nonStringField) {
+    return res.status(422).json({
+      code: 422,
+      reason: "ValidationError",
+      message: "Incorrect field type: expected string",
+      location: nonStringField
+    });
+  }
+
+  // If the userName and password aren't trimmed we give an error.  Users might
+  // expect that these will work without trimming (i.e. they want the password
+  // "foobar ", including the space at the end).  We need to reject such values
+  // explicitly so the users know what's happening, rather than silently
+  // trimming them and expecting the user to understand.
+  // We'll silently trim the other fields, because they aren't credentials used
+  // to log in, so it's less of a problem.
+  const explicityTrimmedFields = ["userName", "password"];
+  const nonTrimmedField = explicityTrimmedFields.find(
+    field => req.body[field].trim() !== req.body[field]
+  );
+
+  if (nonTrimmedField) {
+    return res.status(422).json({
+      code: 422,
+      reason: "ValidationError",
+      message: "Cannot start or end with whitespace",
+      location: nonTrimmedField
+    });
+  }
+
+  const sizedFields = {
+    userName: {
+      min: 1
+    },
+    password: {
+      min: 10,
+      // bcrypt truncates after 72 characters, so let"s not give the illusion
+      // of security by storing extra (unused) info
+      max: 72
+    }
+  };
+  const tooSmallField = Object.keys(sizedFields).find(
+    field =>
+      "min" in sizedFields[field] &&
+            req.body[field].trim().length < sizedFields[field].min
+  );
+  const tooLargeField = Object.keys(sizedFields).find(
+    field =>
+      "max" in sizedFields[field] &&
+            req.body[field].trim().length > sizedFields[field].max
+  );
+
+  if (tooSmallField || tooLargeField) {
+    return res.status(422).json({
+      code: 422,
+      reason: "ValidationError",
+      message: tooSmallField
+        ? `Must be at least ${sizedFields[tooSmallField]
+          .min} characters long`
+        : `Must be at most ${sizedFields[tooLargeField]
+          .max} characters long`,
+      location: tooSmallField || tooLargeField
+    });
+  }
+
+  let { userName, password } = req.body;
+  // userName and password come in pre-trimmed, otherwise we throw an error
+  // before this
+
+  return User.find({userName})
+    .count()
+    .then(count => {
+      if (count > 0) {
+        // There is an existing user with the same userName
+        return Promise.reject({
+          code: 422,
+          reason: "ValidationError",
+          message: "userName already taken",
+          location: "userName"
+        });
+      }
+      // If there is no existing user, hash the password
+      return User.hashPassword(password);
+    })
+    .then(hash => {
+      return User.create({
+        userName,
+        password: hash
+
+      });
+    })
+    .then(user => {
+      return res.status(201).json(user.serialize());
+    })
+    .catch(err => {
+      // Forward validation errors on to the client, otherwise give a 500
+      // error because something unexpected has happened
+      if (err.reason === "ValidationError") {
+        return res.status(err.code).json(err);
+      }
+      res.status(500).json({code: 500, message: "Internal server error"});
+    });
 });
 
-module.exports = router;
+// Never expose all your users like below in a prod application
+// we're just doing this so we have a quick way to see
+// if we're creating users. keep in mind, you can also
+// verify this in the Mongo shell.
+router.get("/", (req, res) => {
+  return User.find()
+    .then(users => res.json(users.map(user => user.serialize())))
+    .catch(err => res.status(500).json({message: "Internal server error"}));
+});
+
+module.exports = {router};
