@@ -24,6 +24,7 @@ app.use( cors({ origin: CLIENT_ORIGIN }) );
 app.use("/api/tasks", tasksRouter);
 app.use("/api/prizes", prizesRouter);
 
+app.use("/api/users", usersRouter);
 
 /****************************
  * Related to Auth, C.K.
