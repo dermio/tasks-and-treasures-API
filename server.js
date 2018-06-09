@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const morgan = require("morgan");
+const jwt = require("jsonwebtoken");
 const passport = require("passport");
 require("dotenv").config();
 
@@ -11,7 +12,8 @@ const { CLIENT_ORIGIN, PORT, DATABASE_URL, SECRET } = require("./config");
 const tasksRouter = require("./routers/tasksRouter");
 const prizesRouter = require("./routers/prizesRouter");
 
-const usersRouter = require("./routers/usersRouter");
+const { router: usersRouter } = require("./routers/usersRouter");
+const { router: loginRouter } = require("./routers/loginRouter");
 
 mongoose.Promise = global.Promise;
 
@@ -21,10 +23,35 @@ app.use(morgan("common"));
 // CORS
 app.use( cors({ origin: CLIENT_ORIGIN }) );
 
+// Token Validation
+function checkToken(req, res, next) {
+  let token = req.headers["x-access-token"];
+  if (!token) {
+    console.log("No token provided");
+    return res.status(401)
+              .send({auth: false, message: "Invalid Credentials"});
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, function(err, decoded) {
+    if (err) {
+      console.log("Failed to authenticate");
+      return res.status(500)
+                .res.send({auth: false, message: "Failed to authenticate."});
+    }
+    else {
+      console.log("Decoded token is: " + decoded);
+      req.userid = decoded.id;
+      next();
+    }
+  });
+}
+
+
+app.use("/api/users", usersRouter); // register new user, unprotected route
+app.use("/api/login", loginRouter); // protected route
+
 app.use("/api/tasks", tasksRouter);
 app.use("/api/prizes", prizesRouter);
-
-app.use("/api/users", usersRouter);
 
 /****************************
  * Related to Auth, C.K.
@@ -32,6 +59,9 @@ app.use("/api/users", usersRouter);
 
 
 
+app.get("/api/protected", checkToken, (req, res) => {
+    res.status(200).json({message: "Access Granted"});
+})
 /****************************
  * Related to Auth
 ****************************/
@@ -43,16 +73,17 @@ and then assign a value to it in run */
 let server;
 
 /* this function connects to our database, then starts the server */
-function runServer(databaseUrl, port = PORT) {
+function runServer() {
   return new Promise((resolve, reject) => {
-    mongoose.connect(databaseUrl, err => {
+    mongoose.connect(DATABASE_URL, err => {
       if (err) {
         return reject(err);
       }
-      server = app.listen(port, () => {
-        console.log(`Your app is listening on port ${port}`);
-        resolve();
-      })
+      server = app
+        .listen(PORT, () => {
+          console.log(`Your app is listening on port ${PORT}`);
+          resolve();
+        })
         .on("error", err => {
           mongoose.disconnect();
           reject(err);
