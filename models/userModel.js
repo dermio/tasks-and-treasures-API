@@ -3,14 +3,14 @@ const bcrypt = require("bcryptjs");
 
 const userSchema = mongoose.Schema({
   role: {type: String, required: true},
-  userName: {type: String, required: true, unique: true},
+  userName: {type: String, required: true /* , unique: true */},
   password: {type: String, required: true}, // password stored as HASH
   name: {type: String, required: true},
   familyCode: {type: String, required: true},
   completedTasks: [String], // not required, for Child user
   approved: {type: Boolean}, // not required, for Child user
 
-  email: {type: String, unique: true, required: true}
+  email: {type: String /* , unique: true */, required: true}
 });
 
 userSchema.methods.serialize = function () {
@@ -37,6 +37,6 @@ userSchema.statics.hashPassword = function (password) {
   return bcrypt.hash(password, 10);
 };
 
-const User = mongoose.model("users", userSchema);
+const User = mongoose.model("users", userSchema, "users");
 
 module.exports = { User };
