@@ -1,18 +1,60 @@
 const express = require("express");
+const router = express.Router();
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const { check, validationResult } = require("express-validator/check");
+const jwt = require("jsonwebtoken");
+const {JWT_SECRET} = require('../config');
+
+/* const { check, validationResult } = require("express-validator/check");
 const { matchedData, sanitize } = require("express-validator/filter");
 const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
+const LocalStrategy = require("passport-local").Strategy; */
 
 const { User } = require("../models/userModel");
 
-const router = express.Router();
+
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 const jsonParser = bodyParser.json();
 
+router.use(bodyParser.json());
 
+router.post("/", (req, res) => {
+  let { userName, password } = req.body;
+  User.findOne({userName: userName})
+      .then(user => {
+        if (user) {
+          if (user.password === password) {
+            /* Add some bcrypt for if statement
+            I.e.: instead of user.password = password,
+            use bcrypt(password) === user.password */
+            let token = jwt.sign({
+                          id: user.id,
+                          username: user.username
+                        }, JWT_SECRET);
+            res.json({token});
+          } else {
+            return res.status(401).json({ errors: "Invalid Credentials" });
+          }
+        } else {
+          return res.status(401).json({ errors: "Invalid Credentials" });
+        }
+      });
+});
+
+
+/*
+TODO on Node backend
+1. Tie Login form component in React to POST
+2. User registering form
+3. When user is created and sent to backend,
+    hash password with bcrypt and then store in mongo
+4. Add bcrypt to login to verify new users that are created
+*/
+
+
+
+
+/*
 passport.use(
   new LocalStrategy(
     { usernameField: "email", passReqToCallback: true },
@@ -46,8 +88,9 @@ passport.deserializeUser(function(id, done) {
     done(err, user);
   });
 });
+*/
 
-router.post(
+/* router.post(
   "/",
   passport.authenticate("local", {
     successRedirect: "/auth",
@@ -57,6 +100,8 @@ router.post(
   function(req, res) {
     next();
   }
-);
+); */
 
-module.exports = router;
+
+
+module.exports = { router };
