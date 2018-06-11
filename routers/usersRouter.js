@@ -100,7 +100,7 @@ router.post("/", jsonParser, (req, res) => {
     });
   }
 
-  let { userName, password } = req.body;
+  let { userName, password, role, name, familyCode, email } = req.body;
   // userName and password come in pre-trimmed, otherwise we throw an error
   // before this
 
@@ -122,8 +122,11 @@ router.post("/", jsonParser, (req, res) => {
     .then(hash => {
       return User.create({
         userName,
-        password: hash
-
+        password: hash,
+        role,
+        name,
+        familyCode,
+        email
       });
     })
     .then(user => {
@@ -132,6 +135,7 @@ router.post("/", jsonParser, (req, res) => {
     .catch(err => {
       // Forward validation errors on to the client, otherwise give a 500
       // error because something unexpected has happened
+      // console.log(err);
       if (err.reason === "ValidationError") {
         return res.status(err.code).json(err);
       }
