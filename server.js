@@ -73,15 +73,15 @@ and then assign a value to it in run */
 let server;
 
 /* this function connects to our database, then starts the server */
-function runServer() {
+function runServer(databaseUrl, port = PORT) {
   return new Promise((resolve, reject) => {
-    mongoose.connect(DATABASE_URL, err => {
+    mongoose.connect(databaseUrl, err => {
       if (err) {
         return reject(err);
       }
       server = app
-        .listen(PORT, () => {
-          console.log(`Your app is listening on port ${PORT}`);
+        .listen(port, () => {
+          console.log(`Your app is listening on port ${port}`);
           resolve();
         })
         .on("error", err => {
@@ -118,7 +118,7 @@ if (require.main === module) {
 module.exports = { app, runServer, closeServer };
 
 
-/***** updated checkToken function *****/
+/***** updated checkToken function, C.K. 11Jun2018 *****/
 
 /* function checkToken(req, res, next) {
   const authorizationHeader = req.headers['authorization'];
