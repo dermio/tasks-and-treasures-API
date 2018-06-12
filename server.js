@@ -116,3 +116,34 @@ if (require.main === module) {
 }
 
 module.exports = { app, runServer, closeServer };
+
+
+/***** updated checkToken function *****/
+
+/* function checkToken(req, res, next) {
+  const authorizationHeader = req.headers['authorization'];
+  let token;
+
+  if (authorizationHeader) {
+    token = authorizationHeader.split(' ')[1];
+  }
+
+  if (!token) {
+    console.log('No token provided');
+    return res.status(403).send({auth: false, message: 'Missing Token'})
+  }
+
+  jwt.verify(token, JWT_ENCRYPTION_KEY, function(err, decoded) {
+    if (err){
+      console.log('Failed to authenticate');
+      return res.status(500).send({
+        auth: false, message: 'Failed to authenticate.'
+      });
+    }
+    else{
+      console.log('Decoded token is: '+decoded);
+      req.userid = decoded.id;
+      next();
+    }
+  });
+} */
