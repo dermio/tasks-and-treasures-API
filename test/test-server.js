@@ -16,7 +16,7 @@ chai.use(chaiHttp);
 we'll call it in an `afterEach` block below
 to ensure data from one test does not stick
 around for next one */
-function tearDownDb() {
-  console.warn('Deleting database');
-  return mongoose.connection.dropDatabase();
-}
+// function tearDownDb() {
+//   console.warn('Deleting database');
+//   return mongoose.connection.dropDatabase();
+// }
