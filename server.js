@@ -12,7 +12,7 @@ const { CLIENT_ORIGIN, PORT, DATABASE_URL, SECRET } = require("./config");
 const tasksRouter = require("./routers/tasksRouter");
 const prizesRouter = require("./routers/prizesRouter");
 
-const { router: usersRouter } = require("./routers/usersRouter");
+
 
 
 mongoose.Promise = global.Promise;
@@ -47,7 +47,7 @@ function checkToken(req, res, next) {
 }
 
 
-app.use("/api/users", usersRouter); // register new user, unprotected route
+
 
 app.use("/api/tasks", tasksRouter);
 app.use("/api/prizes", prizesRouter);
@@ -115,34 +115,3 @@ if (require.main === module) {
 }
 
 module.exports = { app, runServer, closeServer };
-
-
-/***** updated checkToken function, C.K. 11Jun2018 *****/
-
-/* function checkToken(req, res, next) {
-  const authorizationHeader = req.headers['authorization'];
-  let token;
-
-  if (authorizationHeader) {
-    token = authorizationHeader.split(' ')[1];
-  }
-
-  if (!token) {
-    console.log('No token provided');
-    return res.status(403).send({auth: false, message: 'Missing Token'})
-  }
-
-  jwt.verify(token, JWT_ENCRYPTION_KEY, function(err, decoded) {
-    if (err){
-      console.log('Failed to authenticate');
-      return res.status(500).send({
-        auth: false, message: 'Failed to authenticate.'
-      });
-    }
-    else{
-      console.log('Decoded token is: '+decoded);
-      req.userid = decoded.id;
-      next();
-    }
-  });
-} */
