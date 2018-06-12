@@ -3,7 +3,9 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
-const {JWT_SECRET} = require('../config');
+const bcrypt = require("bcryptjs");
+
+const { JWT_SECRET } = require('../config');
 
 /* const { check, validationResult } = require("express-validator/check");
 const { matchedData, sanitize } = require("express-validator/filter");
@@ -20,18 +22,18 @@ router.use(bodyParser.json());
 
 router.post("/", (req, res) => {
   let { userName, password } = req.body;
-  User.findOne({userName: userName})
-      .then(user => {
-        if (user) {
-          if (user.password === password) {
-            /* Add some bcrypt for if statement
-            I.e.: instead of user.password = password,
-            use bcrypt(password) === user.password */
+  User.findOne({ userName: userName })
+      .then(user => { // user is a document from `users` collection in DB
+        if (user) { // if the user exists, run `if` block
+          /* compare user supplied password (user.password) to the
+          hashed password using bcrypt */
+          if (bcrypt.compare(user.password, password)) {
             let token = jwt.sign({
                           id: user.id,
                           username: user.username
                         }, JWT_SECRET);
-            res.json({token});
+
+            res.json({ token });
           } else {
             return res.status(401).json({ errors: "Invalid Credentials" });
           }
