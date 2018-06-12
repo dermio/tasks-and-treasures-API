@@ -13,7 +13,7 @@ const tasksRouter = require("./routers/tasksRouter");
 const prizesRouter = require("./routers/prizesRouter");
 
 const { router: usersRouter } = require("./routers/usersRouter");
-const { router: loginRouter } = require("./routers/loginRouter");
+
 
 mongoose.Promise = global.Promise;
 
@@ -48,7 +48,6 @@ function checkToken(req, res, next) {
 
 
 app.use("/api/users", usersRouter); // register new user, unprotected route
-app.use("/api/login", loginRouter); // protected route
 
 app.use("/api/tasks", tasksRouter);
 app.use("/api/prizes", prizesRouter);
