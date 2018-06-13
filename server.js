@@ -50,7 +50,7 @@ app.use("/api/prizes", prizesRouter);
  * Related to Auth, C.K.
 ****************************/
 
-app.get("/api/protected", checkToken, (req, res) => {
+app.get("/api/protected", jwtAuth, (req, res) => {
     res.status(200).json({message: "Access Granted"});
 })
 
