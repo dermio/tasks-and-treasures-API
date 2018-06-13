@@ -27,30 +27,9 @@ mongoose.Promise = global.Promise;
 app.use(morgan("common"));
 
 // CORS
-app.use( cors({ origin: CLIENT_ORIGIN }) );
+// app.use( cors({ origin: CLIENT_ORIGIN }) );
 
-// Token Validation
-function checkToken(req, res, next) {
-  let token = req.headers["x-access-token"];
-  if (!token) {
-    console.log("No token provided");
-    return res.status(401)
-              .send({auth: false, message: "Invalid Credentials"});
-  }
 
-  jwt.verify(token, process.env.JWT_SECRET, function(err, decoded) {
-    if (err) {
-      console.log("Failed to authenticate");
-      return res.status(500)
-                .res.send({auth: false, message: "Failed to authenticate."});
-    }
-    else {
-      console.log("Decoded token is: " + decoded);
-      req.userid = decoded.id;
-      next();
-    }
-  });
-}
 
 
 
@@ -121,3 +100,29 @@ if (require.main === module) {
 }
 
 module.exports = { app, runServer, closeServer };
+
+
+
+// Token Validation
+/* function checkToken(req, res, next) {
+  let token = req.headers["x-access-token"];
+  if (!token) {
+    console.log("No token provided");
+    return res.status(401)
+              .send({auth: false, message: "Invalid Credentials"});
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, function(err, decoded) {
+    if (err) {
+      console.log("Failed to authenticate");
+      return res.status(500)
+                .res.send({auth: false, message: "Failed to authenticate."});
+    }
+    else {
+      console.log("Decoded token is: " + decoded);
+      req.userid = decoded.id;
+      next();
+    }
+  });
+}
+*/
