@@ -46,21 +46,20 @@ const userSchema = mongoose.Schema({
   role: {type: String, required: true},
   username: {type: String, required: true /* , unique: true */},
   password: {type: String, required: true}, // password stored as HASH
-  name: {type: String, required: true},
   familyCode: {type: String, required: true},
   completedTasks: [String], // not required, for Child user
   approved: {type: Boolean}, // not required, for Child user
 
-  email: {type: String /* , unique: true */, required: true}
+  email: {type: String /* , unique: true, required: true */}
 });
 
 userSchema.methods.serialize = function () {
   return {
     id: this._id,
+
     role: this.role,
     username: this.username,
     password: this.password, // Should hashed password be returned?
-    name: this.name,
     familyCode: this.familyCode,
     completedTasks: this.completedTasks,
     approved: this.approved,
