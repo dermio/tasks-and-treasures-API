@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 
 const userSchema = mongoose.Schema({
   role: {type: String, required: true},
-  userName: {type: String, required: true /* , unique: true */},
+  username: {type: String, required: true /* , unique: true */},
   password: {type: String, required: true}, // password stored as HASH
   name: {type: String, required: true},
   familyCode: {type: String, required: true},
@@ -17,7 +17,7 @@ userSchema.methods.serialize = function () {
   return {
     id: this._id,
     role: this.role,
-    userName: this.userName,
+    username: this.username,
     password: this.password, // Should hashed password be returned?
     name: this.name,
     familyCode: this.familyCode,
