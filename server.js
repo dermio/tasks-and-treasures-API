@@ -12,8 +12,14 @@ const { CLIENT_ORIGIN, PORT, DATABASE_URL, SECRET } = require("./config");
 const tasksRouter = require("./routers/tasksRouter");
 const prizesRouter = require("./routers/prizesRouter");
 
+const { router: usersRouter } = require('./users');
+const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
 
+passport.use(localStrategy);
+passport.use(jwtStrategy);
 
+app.use('/api/users/', usersRouter);
+app.use('/api/auth/', authRouter);
 
 mongoose.Promise = global.Promise;
 
