@@ -18,8 +18,6 @@ const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
 passport.use(localStrategy);
 passport.use(jwtStrategy);
 
-app.use('/api/users/', usersRouter);
-app.use('/api/auth/', authRouter);
 
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
@@ -41,6 +39,9 @@ app.use(function (req, res, next) {
   }
   next();
 });
+
+app.use('/api/users/', usersRouter);
+app.use('/api/auth/', authRouter);
 
 app.use("/api/tasks", tasksRouter);
 app.use("/api/prizes", prizesRouter);
