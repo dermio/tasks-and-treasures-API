@@ -92,11 +92,15 @@ router.post('/', jsonParser, (req, res) => {
     });
   }
 
-  let {username, password, firstName = '', lastName = ''} = req.body;
+  // let {username, password, firstName = '', lastName = ''} = req.body;
+  let {username, password, role = '', familyCode = ''} = req.body;
   // Username and password come in pre-trimmed, otherwise we throw an error
   // before this
-  firstName = firstName.trim();
-  lastName = lastName.trim();
+  // firstName = firstName.trim();
+  // lastName = lastName.trim();
+  role = role.trim();
+  familyCode = familyCode.trim();
+
 
   return User.find({username})
     .count()
@@ -117,8 +121,10 @@ router.post('/', jsonParser, (req, res) => {
       return User.create({
         username,
         password: hash,
-        firstName,
-        lastName
+        // firstName,
+        // lastName
+        role,
+        familyCode
       });
     })
     .then(user => {
