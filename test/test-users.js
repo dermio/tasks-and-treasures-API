@@ -281,40 +281,43 @@ describe('/api/user', function() {
             expect(res.body.location).to.equal('password');
           });
       });
-      // it('Should reject users with duplicate username', function() {
-      //   // Create an initial user
-      //   return User.create({
-      //     username,
-      //     password,
-      //     firstName,
-      //     lastName
-      //   })
-      //     .then(() =>
-      //       // Try to create a second user with the same username
-      //       chai.request(app).post('/api/users').send({
-      //         username,
-      //         password,
-      //         firstName,
-      //         lastName
-      //       })
-      //     )
-      //     .then(() =>
-      //       expect.fail(null, null, 'Request should not succeed')
-      //     )
-      //     .catch(err => {
-      //       if (err instanceof chai.AssertionError) {
-      //         throw err;
-      //       }
+      it('Should reject users with duplicate username', function() {
+        // Create an initial user
+        return User.create({
+          username,
+          password,
+          firstName,
+          lastName
+        })
+          .then(() =>
+            // Try to create a second user with the same username
+            chai.request(app).post('/api/users').send({
+              username,
+              password,
+              firstName,
+              lastName
+            })
+          )
+          .then((res) => {
+            expect.fail(null, null, 'Request should not succeed')
+            expect(res.body.reason).to.equal('ValidationError');
+          })
+          .catch(err => {
+            if (err instanceof chai.AssertionError) {
+              throw err;
+            }
 
-      //       const res = err.response;
-      //       expect(res).to.have.status(422);
-      //       expect(res.body.reason).to.equal('ValidationError');
-      //       expect(res.body.message).to.equal(
-      //         'Username already taken'
-      //       );
-      //       expect(res.body.location).to.equal('username');
-      //     });
-      // });
+            const res = err.response;
+
+            // Code below doesn't work
+            /* expect(res).to.have.status(422);
+            expect(res.body.reason).to.equal('ValidationError');
+            expect(res.body.message).to.equal(
+              'Username already taken'
+            );
+            expect(res.body.location).to.equal('username'); */
+          });
+      });
       // it('Should create a new user', function() {
       //   return chai
       //     .request(app)
