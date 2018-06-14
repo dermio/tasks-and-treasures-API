@@ -24,6 +24,9 @@ describe('/api/user', function() {
   const firstNameB = 'ExampleB';
   const lastNameB = 'UserB';
 
+  const role = "parent",
+  const familyCode = "smith123";
+
   before(function() {
     return runServer(TEST_DATABASE_URL);
   });
