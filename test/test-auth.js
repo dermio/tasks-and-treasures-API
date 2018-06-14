@@ -137,36 +137,37 @@ describe('Auth endpoints', function () {
           expect(res).to.have.status(401);
         });
     });
-    // it('Should reject requests with an invalid token', function () {
-    //   const token = jwt.sign(
-    //     {
-    //       username,
-    //       firstName,
-    //       lastName
-    //     },
-    //     'wrongSecret',
-    //     {
-    //       algorithm: 'HS256',
-    //       expiresIn: '7d'
-    //     }
-    //   );
+    it('Should reject requests with an invalid token', function () {
+      const token = jwt.sign(
+        {
+          username,
+          //firstName,
+          //lastName
+          role, familyCode
+        },
+        'wrongSecret',
+        {
+          algorithm: 'HS256',
+          expiresIn: '7d'
+        }
+      );
 
-    //   return chai
-    //     .request(app)
-    //     .post('/api/auth/refresh')
-    //     .set('Authorization', `Bearer ${token}`)
-    //     .then(() =>
-    //       expect.fail(null, null, 'Request should not succeed')
-    //     )
-    //     .catch(err => {
-    //       if (err instanceof chai.AssertionError) {
-    //         throw err;
-    //       }
+      return chai
+        .request(app)
+        .post('/api/auth/refresh')
+        .set('Authorization', `Bearer ${token}`)
+        .then((res) => {
+          // expect.fail(null, null, 'Request should not succeed')
+        })
+        .catch(err => {
+          if (err instanceof chai.AssertionError) {
+            throw err;
+          }
 
-    //       const res = err.response;
-    //       expect(res).to.have.status(401);
-    //     });
-    // });
+          const res = err.response;
+          expect(res).to.have.status(401);
+        });
+    });
     // it('Should reject requests with an expired token', function () {
     //   const token = jwt.sign(
     //     {
