@@ -73,7 +73,7 @@ describe('/api/user', function() {
             firstName,
             lastName
           })
-          .then(() => {
+          .then((res) => {
             // expect.fail(null, null, 'Request should not succeed')
             expect(res).to.have.status(422);
             expect(res.body.reason).to.equal('ValidationError');
