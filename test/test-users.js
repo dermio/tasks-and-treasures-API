@@ -24,7 +24,7 @@ describe('/api/user', function() {
   const firstNameB = 'ExampleB';
   const lastNameB = 'UserB';
 
-  const role = "parent",
+  const role = "parent";
   const familyCode = "smith123";
 
   before(function() {
