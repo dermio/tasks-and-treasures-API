@@ -318,41 +318,44 @@ describe('/api/user', function() {
             expect(res.body.location).to.equal('username'); */
           });
       });
-      // it('Should create a new user', function() {
-      //   return chai
-      //     .request(app)
-      //     .post('/api/users')
-      //     .send({
-      //       username,
-      //       password,
-      //       firstName,
-      //       lastName
-      //     })
-      //     .then(res => {
-      //       expect(res).to.have.status(201);
-      //       expect(res.body).to.be.an('object');
-      //       expect(res.body).to.have.keys(
-      //         'username',
-      //         'firstName',
-      //         'lastName'
-      //       );
-      //       expect(res.body.username).to.equal(username);
-      //       expect(res.body.firstName).to.equal(firstName);
-      //       expect(res.body.lastName).to.equal(lastName);
-      //       return User.findOne({
-      //         username
-      //       });
-      //     })
-      //     .then(user => {
-      //       expect(user).to.not.be.null;
-      //       expect(user.firstName).to.equal(firstName);
-      //       expect(user.lastName).to.equal(lastName);
-      //       return user.validatePassword(password);
-      //     })
-      //     .then(passwordIsCorrect => {
-      //       expect(passwordIsCorrect).to.be.true;
-      //     });
-      // });
+      it('Should create a new user', function() {
+        return chai
+          .request(app)
+          .post('/api/users')
+          .send({
+            username,
+            password,
+            role,
+            familyCode
+          })
+          .then(res => {
+            expect(res).to.have.status(201);
+            expect(res.body).to.be.an('object');
+            expect(res.body).to.have.keys(
+              // 'username',
+              // 'firstName',
+              // 'lastName'
+              'username', 'password', 'role',
+              'familyCode', 'id', 'completedTasks'
+              // ??? why include 'id' and 'completedTasks' ???
+            );
+            expect(res.body.username).to.equal(username);
+            expect(res.body.role).to.equal(role);
+            expect(res.body.familyCode).to.equal(familyCode);
+            return User.findOne({
+              username
+            });
+          })
+          .then(user => {
+            expect(user).to.not.be.null;
+            expect(user.role).to.equal(role);
+            expect(user.familyCode).to.equal(familyCode);
+            return user.validatePassword(password);
+          })
+          .then(passwordIsCorrect => {
+            expect(passwordIsCorrect).to.be.true;
+          });
+      });
     });
 
     // describe('GET', function() {
