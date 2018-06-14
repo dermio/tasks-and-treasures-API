@@ -53,16 +53,13 @@ describe('Auth endpoints', function () {
       return chai
         .request(app)
         .post('/api/auth/login')
-        .then(() =>
-          expect.fail(null, null, 'Request should not succeed')
-        )
+        .then((res) => {
+          expect(res).to.have.status(400);
+        })
         .catch(err => {
           if (err instanceof chai.AssertionError) {
             throw err;
           }
-
-          const res = err.response;
-          expect(res).to.have.status(400);
         });
     });
     // it('Should reject requests with incorrect usernames', function () {
