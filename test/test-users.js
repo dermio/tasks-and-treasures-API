@@ -64,30 +64,34 @@ describe('/api/user', function() {
             }
           });
       });
-      // it('Should reject users with missing password', function() {
-      //   return chai
-      //     .request(app)
-      //     .post('/api/users')
-      //     .send({
-      //       username,
-      //       firstName,
-      //       lastName
-      //     })
-      //     .then(() =>
-      //       expect.fail(null, null, 'Request should not succeed')
-      //     )
-      //     .catch(err => {
-      //       if (err instanceof chai.AssertionError) {
-      //         throw err;
-      //       }
+      it('Should reject users with missing password', function() {
+        return chai
+          .request(app)
+          .post('/api/users')
+          .send({
+            username,
+            firstName,
+            lastName
+          })
+          .then(() => {
+            // expect.fail(null, null, 'Request should not succeed')
+            expect(res).to.have.status(422);
+            expect(res.body.reason).to.equal('ValidationError');
+            expect(res.body.message).to.equal('Missing field');
+            expect(res.body.location).to.equal('password');
+          })
+          .catch(err => {
+            if (err instanceof chai.AssertionError) {
+              throw err;
+            }
 
-      //       const res = err.response;
-      //       expect(res).to.have.status(422);
-      //       expect(res.body.reason).to.equal('ValidationError');
-      //       expect(res.body.message).to.equal('Missing field');
-      //       expect(res.body.location).to.equal('password');
-      //     });
-      // });
+            // const res = err.response;
+            // expect(res).to.have.status(422);
+            // expect(res.body.reason).to.equal('ValidationError');
+            // expect(res.body.message).to.equal('Missing field');
+            // expect(res.body.location).to.equal('password');
+          });
+      });
       // it('Should reject users with non-string username', function() {
       //   return chai
       //     .request(app)
