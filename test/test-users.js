@@ -254,33 +254,33 @@ describe('/api/user', function() {
             expect(res.body.location).to.equal('password');
           });
       });
-      // it('Should reject users with password greater than 72 characters', function() {
-      //   return chai
-      //     .request(app)
-      //     .post('/api/users')
-      //     .send({
-      //       username,
-      //       password: new Array(73).fill('a').join(''),
-      //       firstName,
-      //       lastName
-      //     })
-      //     .then(() =>
-      //       expect.fail(null, null, 'Request should not succeed')
-      //     )
-      //     .catch(err => {
-      //       if (err instanceof chai.AssertionError) {
-      //         throw err;
-      //       }
+      it('Should reject users with password greater than 72 characters', function() {
+        return chai
+          .request(app)
+          .post('/api/users')
+          .send({
+            username,
+            password: new Array(73).fill('a').join(''),
+            firstName,
+            lastName
+          })
+          .then((res) => {
+            // expect.fail(null, null, 'Request should not succeed')
+          })
+          .catch(err => {
+            if (err instanceof chai.AssertionError) {
+              throw err;
+            }
 
-      //       const res = err.response;
-      //       expect(res).to.have.status(422);
-      //       expect(res.body.reason).to.equal('ValidationError');
-      //       expect(res.body.message).to.equal(
-      //         'Must be at most 72 characters long'
-      //       );
-      //       expect(res.body.location).to.equal('password');
-      //     });
-      // });
+            const res = err.response;
+            expect(res).to.have.status(422);
+            expect(res.body.reason).to.equal('ValidationError');
+            expect(res.body.message).to.equal(
+              'Must be at most 72 characters long'
+            );
+            expect(res.body.location).to.equal('password');
+          });
+      });
       // it('Should reject users with duplicate username', function() {
       //   // Create an initial user
       //   return User.create({
