@@ -2,12 +2,11 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const morgan = require("morgan");
-const jwt = require("jsonwebtoken");
 const passport = require("passport");
 require("dotenv").config();
 
 const cors = require("cors");
-const { CLIENT_ORIGIN, PORT, DATABASE_URL, SECRET } = require("./config");
+const { PORT, DATABASE_URL } = require("./config");
 
 const tasksRouter = require("./routers/tasksRouter");
 const prizesRouter = require("./routers/prizesRouter");
