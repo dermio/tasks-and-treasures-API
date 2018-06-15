@@ -5,7 +5,6 @@ const morgan = require("morgan");
 const passport = require("passport");
 require("dotenv").config();
 
-const cors = require("cors");
 const { PORT, DATABASE_URL } = require("./config");
 
 const tasksRouter = require("./routers/tasksRouter");
@@ -24,9 +23,6 @@ mongoose.Promise = global.Promise;
 
 // Logging
 app.use(morgan("common"));
-
-// CORS
-// app.use( cors({ origin: CLIENT_ORIGIN }) );
 
 // CORS
 app.use(function (req, res, next) {
