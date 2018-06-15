@@ -1,57 +1,49 @@
-const express = require("express");
+  'use strict';
+const express = require('express');
+const bodyParser = require('body-parser');
+
+const {User} = require('./models');
+
 const router = express.Router();
 
-const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json();
 
-const { User } = require("../models/userModel");
-
-
-/*
-Add User router CRUD routes after finishing
-registerRouter and loginRouter
-*/
-
-
 // Post to register a new user
-// Unprotected route
-router.post("/", jsonParser, (req, res) => {
-  const requiredFields = [
-    "userName", "password", "role", "name", "familyCode", "email"
-  ];
+router.post('/', jsonParser, (req, res) => {
+  const requiredFields = ['username', 'password', 'role', 'familyCode'];
   const missingField = requiredFields.find(field => !(field in req.body));
 
   if (missingField) {
     return res.status(422).json({
       code: 422,
-      reason: "ValidationError",
-      message: "Missing field",
+      reason: 'ValidationError',
+      message: 'Missing field',
       location: missingField
     });
   }
 
-  const stringFields = ["userName", "password"];
+  const stringFields = ['username', 'password', 'role', 'familyCode'];
   const nonStringField = stringFields.find(
-    field => field in req.body && typeof req.body[field] !== "string"
+    field => field in req.body && typeof req.body[field] !== 'string'
   );
 
   if (nonStringField) {
     return res.status(422).json({
       code: 422,
-      reason: "ValidationError",
-      message: "Incorrect field type: expected string",
+      reason: 'ValidationError',
+      message: 'Incorrect field type: expected string',
       location: nonStringField
     });
   }
 
-  // If the userName and password aren't trimmed we give an error.  Users might
+  // If the username and password aren't trimmed we give an error.  Users might
   // expect that these will work without trimming (i.e. they want the password
   // "foobar ", including the space at the end).  We need to reject such values
   // explicitly so the users know what's happening, rather than silently
   // trimming them and expecting the user to understand.
   // We'll silently trim the other fields, because they aren't credentials used
   // to log in, so it's less of a problem.
-  const explicityTrimmedFields = ["userName", "password"];
+  const explicityTrimmedFields = ['username', 'password'];
   const nonTrimmedField = explicityTrimmedFields.find(
     field => req.body[field].trim() !== req.body[field]
   );
@@ -59,38 +51,38 @@ router.post("/", jsonParser, (req, res) => {
   if (nonTrimmedField) {
     return res.status(422).json({
       code: 422,
-      reason: "ValidationError",
-      message: "Cannot start or end with whitespace",
+      reason: 'ValidationError',
+      message: 'Cannot start or end with whitespace',
       location: nonTrimmedField
     });
   }
 
   const sizedFields = {
-    userName: {
+    username: {
       min: 1
     },
     password: {
       min: 10,
-      // bcrypt truncates after 72 characters, so let"s not give the illusion
+      // bcrypt truncates after 72 characters, so let's not give the illusion
       // of security by storing extra (unused) info
       max: 72
     }
   };
   const tooSmallField = Object.keys(sizedFields).find(
     field =>
-      "min" in sizedFields[field] &&
+      'min' in sizedFields[field] &&
             req.body[field].trim().length < sizedFields[field].min
   );
   const tooLargeField = Object.keys(sizedFields).find(
     field =>
-      "max" in sizedFields[field] &&
+      'max' in sizedFields[field] &&
             req.body[field].trim().length > sizedFields[field].max
   );
 
   if (tooSmallField || tooLargeField) {
     return res.status(422).json({
       code: 422,
-      reason: "ValidationError",
+      reason: 'ValidationError',
       message: tooSmallField
         ? `Must be at least ${sizedFields[tooSmallField]
           .min} characters long`
@@ -100,20 +92,26 @@ router.post("/", jsonParser, (req, res) => {
     });
   }
 
-  let { userName, password } = req.body;
-  // userName and password come in pre-trimmed, otherwise we throw an error
+  // let {username, password, firstName = '', lastName = ''} = req.body;
+  let {username, password, role = '', familyCode = ''} = req.body;
+  // Username and password come in pre-trimmed, otherwise we throw an error
   // before this
+  // firstName = firstName.trim();
+  // lastName = lastName.trim();
+  role = role.trim();
+  familyCode = familyCode.trim();
 
-  return User.find({userName})
+
+  return User.find({username})
     .count()
     .then(count => {
       if (count > 0) {
-        // There is an existing user with the same userName
+        // There is an existing user with the same username
         return Promise.reject({
           code: 422,
-          reason: "ValidationError",
-          message: "userName already taken",
-          location: "userName"
+          reason: 'ValidationError',
+          message: 'Username already taken',
+          location: 'username'
         });
       }
       // If there is no existing user, hash the password
@@ -121,9 +119,12 @@ router.post("/", jsonParser, (req, res) => {
     })
     .then(hash => {
       return User.create({
-        userName,
-        password: hash
-
+        username,
+        password: hash,
+        // firstName,
+        // lastName
+        role,
+        familyCode
       });
     })
     .then(user => {
@@ -132,10 +133,10 @@ router.post("/", jsonParser, (req, res) => {
     .catch(err => {
       // Forward validation errors on to the client, otherwise give a 500
       // error because something unexpected has happened
-      if (err.reason === "ValidationError") {
+      if (err.reason === 'ValidationError') {
         return res.status(err.code).json(err);
       }
-      res.status(500).json({code: 500, message: "Internal server error"});
+      res.status(500).json({code: 500, message: 'Internal server error'});
     });
 });
 
@@ -143,10 +144,10 @@ router.post("/", jsonParser, (req, res) => {
 // we're just doing this so we have a quick way to see
 // if we're creating users. keep in mind, you can also
 // verify this in the Mongo shell.
-router.get("/", (req, res) => {
+router.get('/', (req, res) => {
   return User.find()
     .then(users => res.json(users.map(user => user.serialize())))
-    .catch(err => res.status(500).json({message: "Internal server error"}));
+    .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
 
 module.exports = {router};

@@ -12,8 +12,14 @@ const { CLIENT_ORIGIN, PORT, DATABASE_URL, SECRET } = require("./config");
 const tasksRouter = require("./routers/tasksRouter");
 const prizesRouter = require("./routers/prizesRouter");
 
-const { router: usersRouter } = require("./routers/usersRouter");
-const { router: loginRouter } = require("./routers/loginRouter");
+const { router: usersRouter } = require('./users');
+const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
+
+passport.use(localStrategy);
+passport.use(jwtStrategy);
+
+
+const jwtAuth = passport.authenticate('jwt', { session: false });
 
 mongoose.Promise = global.Promise;
 
@@ -21,47 +27,34 @@ mongoose.Promise = global.Promise;
 app.use(morgan("common"));
 
 // CORS
-app.use( cors({ origin: CLIENT_ORIGIN }) );
+// app.use( cors({ origin: CLIENT_ORIGIN }) );
 
-// Token Validation
-function checkToken(req, res, next) {
-  let token = req.headers["x-access-token"];
-  if (!token) {
-    console.log("No token provided");
-    return res.status(401)
-              .send({auth: false, message: "Invalid Credentials"});
+// CORS
+app.use(function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE');
+  if (req.method === 'OPTIONS') {
+    return res.send(204);
   }
+  next();
+});
 
-  jwt.verify(token, process.env.JWT_SECRET, function(err, decoded) {
-    if (err) {
-      console.log("Failed to authenticate");
-      return res.status(500)
-                .res.send({auth: false, message: "Failed to authenticate."});
-    }
-    else {
-      console.log("Decoded token is: " + decoded);
-      req.userid = decoded.id;
-      next();
-    }
-  });
-}
-
-
-app.use("/api/users", usersRouter); // register new user, unprotected route
-app.use("/api/login", loginRouter); // protected route
+app.use('/api/users/', usersRouter);
+app.use('/api/auth/', authRouter);
 
 app.use("/api/tasks", tasksRouter);
 app.use("/api/prizes", prizesRouter);
+
 
 /****************************
  * Related to Auth, C.K.
 ****************************/
 
-
-
-app.get("/api/protected", checkToken, (req, res) => {
+app.get("/api/protected", jwtAuth, (req, res) => {
     res.status(200).json({message: "Access Granted"});
 })
+
 /****************************
  * Related to Auth
 ****************************/
@@ -118,32 +111,29 @@ if (require.main === module) {
 module.exports = { app, runServer, closeServer };
 
 
-/***** updated checkToken function, C.K. 11Jun2018 *****/
 
-/* function checkToken(req, res, next) {
-  const authorizationHeader = req.headers['authorization'];
-  let token;
 
-  if (authorizationHeader) {
-    token = authorizationHeader.split(' ')[1];
-  }
-
+// Token Validation
+/*
+function checkToken(req, res, next) {
+  let token = req.headers["x-access-token"];
   if (!token) {
-    console.log('No token provided');
-    return res.status(403).send({auth: false, message: 'Missing Token'})
+    console.log("No token provided");
+    return res.status(401)
+              .send({auth: false, message: "Invalid Credentials"});
   }
 
-  jwt.verify(token, JWT_ENCRYPTION_KEY, function(err, decoded) {
-    if (err){
-      console.log('Failed to authenticate');
-      return res.status(500).send({
-        auth: false, message: 'Failed to authenticate.'
-      });
+  jwt.verify(token, process.env.JWT_SECRET, function(err, decoded) {
+    if (err) {
+      console.log("Failed to authenticate");
+      return res.status(500)
+                .res.send({auth: false, message: "Failed to authenticate."});
     }
-    else{
-      console.log('Decoded token is: '+decoded);
+    else {
+      console.log("Decoded token is: " + decoded);
       req.userid = decoded.id;
       next();
     }
   });
-} */
+}
+*/
