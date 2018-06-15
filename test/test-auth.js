@@ -141,9 +141,8 @@ describe('Auth endpoints', function () {
       const token = jwt.sign(
         {
           username,
-          //firstName,
-          //lastName
-          role, familyCode
+          role,
+          familyCode
         },
         'wrongSecret',
         {
@@ -173,9 +172,8 @@ describe('Auth endpoints', function () {
         {
           user: {
             username,
-            // firstName,
-            // lastName
-            role, familyCode
+            role,
+            familyCode
           },
           exp: Math.floor(Date.now() / 1000) - 10 // Expired ten seconds ago
         },
