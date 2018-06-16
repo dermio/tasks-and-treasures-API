@@ -50,7 +50,7 @@ router.post("/", jsonParser, jwtAuth, (req, res) => {
 });
 
 // DELETE task, for Parent User
-router.delete("/:id", (req, res) => {
+router.delete("/:id", jwtAuth, (req, res) => {
   Task.findByIdAndRemove(req.params.id)
       .then(() => {
         console.log(`Deleted task with id \`${req.params.id}\``);
