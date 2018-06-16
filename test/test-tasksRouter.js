@@ -47,7 +47,7 @@ describe("Tasks API resource", function () {
   const username = 'exampleUser';
   const password = 'examplePass';
   const role = 'Example';
-  const familyCode = 'User';
+  const familyCode = 'schwarzeneggerT800';
 
 
   // we need each of these hook functions to return a promise
@@ -98,27 +98,28 @@ describe("Tasks API resource", function () {
     }
   ); */
 
-  // describe("GET endpoint", function () {
-  //   it("should return all tasks", function () {
-  //     let res;
-  //     return chai.request(app)
-  //       .get("/api/tasks/schwarzeneggerT800")
-  //       .then(function (_res) {
-  //         res = _res;
-  //         res.should.have.status(200);
-  //         res.should.be.json;
-  //         res.body.should.be.a("array");
-  //         res.body.forEach(task => {
-  //           task.should.be.a("object");
-  //           task.should.include.keys("taskName", "familyCode");
-  //         });
-  //         return Task.count();
-  //       })
-  //       .then(function (count) {
-  //         res.body.length.should.equal(count);
-  //       });
-  //   });
-  // });
+  describe("GET endpoint", function () {
+    it("should return all tasks", function () {
+      let res;
+      return chai.request(app)
+        .get(`/api/tasks/${familyCode}`)
+        .set('Authorization', `Bearer ${token}`)
+        .then(function (_res) {
+          res = _res;
+          res.should.have.status(200);
+          res.should.be.json;
+          res.body.should.be.a("array");
+          res.body.forEach(task => {
+            task.should.be.a("object");
+            task.should.include.keys("taskName", "familyCode");
+          });
+          return Task.count();
+        })
+        .then(function (count) {
+          res.body.length.should.equal(count);
+        });
+    });
+  });
 
   // describe("POST endpoint", function () {
   //   it("should add a new task", function () {
