@@ -41,18 +41,9 @@ app.use("/api/auth/", authRouter);
 app.use("/api/tasks", tasksRouter);
 app.use("/api/prizes", prizesRouter);
 
-
-/****************************
- * Related to Auth, C.K.
-****************************/
-
 app.get("/api/protected", jwtAuth, (req, res) => {
     res.status(200).json({message: "Access Granted"});
 })
-
-/****************************
- * Related to Auth
-****************************/
 
 
 /* closeServer needs access to a server object, but that only
