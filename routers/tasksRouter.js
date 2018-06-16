@@ -25,7 +25,7 @@ router.get("/:familyCode", jwtAuth, (req, res) => {
 });
 
 // POST task, for Parent User
-router.post("/", jsonParser, (req, res) => {
+router.post("/", jsonParser, jwtAuth, (req, res) => {
   //console.log(req.body);
   let requiredFields = ["taskName", "familyCode"];
 
