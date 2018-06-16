@@ -147,24 +147,25 @@ describe("Tasks API resource", function () {
     });
   });
 
-  // describe("DELETE endpoint", function () {
-  //   it("should delete a task", function () {
-  //     let task;
+  describe("DELETE endpoint", function () {
+    it("should delete a task", function () {
+      let task;
 
-  //     return Task
-  //       .findOne()
-  //       .then(function (_task) {
-  //         task = _task;
-  //         return chai.request(app).delete(`/api/tasks/${task.id}`);
-  //       })
-  //       .then(function (res) {
-  //         res.should.have.status(204);
-  //       })
-  //       .then(function (_task) {
-  //         should.not.exist(_task);
-  //       });
-  //   });
-  // });
+      return Task
+        .findOne()
+        .then(function (_task) {
+          task = _task;
+          return chai.request(app).delete(`/api/tasks/${task.id}`)
+                    .set("Authorization", `Bearer ${token}`);
+        })
+        .then(function (res) {
+          res.should.have.status(204);
+        })
+        .then(function (_task) {
+          should.not.exist(_task);
+        });
+    });
+  });
 
   // describe("PUT endpoint", function () {
   //   /* strategy:
