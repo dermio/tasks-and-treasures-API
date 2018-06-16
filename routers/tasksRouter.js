@@ -6,9 +6,24 @@ const jsonParser = bodyParser.json();
 
 const { Task } = require("../models/taskModel");
 
+// Auth
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
+const config = require('../config');
+
+const createAuthToken = function(user) {
+  return jwt.sign({user}, config.JWT_SECRET, {
+    subject: user.username,
+    expiresIn: config.JWT_EXPIRY,
+    algorithm: 'HS256'
+  });
+};
+
+const jwtAuth = passport.authenticate('jwt', {session: false});
+
 
 // GET all tasks, for Parent and Child user with particular family code.
-router.get("/:familyCode", (req, res) => {
+router.get("/:familyCode", jwtAuth, (req, res) => {
   Task.find({ familyCode: req.params.familyCode })
       .then((tasks) => {
         res.json(tasks.map(task => task.serialize()));
