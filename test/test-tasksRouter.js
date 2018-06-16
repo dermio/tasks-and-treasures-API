@@ -11,6 +11,10 @@ const should = chai.should();
 chai.use(chaiHttp);
 
 
+// Auth
+// var request = require('supertest')(app);
+// var token;
+
 /* this function deletes the entire database.
 we'll call it in an `afterEach` block below
 to ensure data from one test does not stick
@@ -44,7 +48,26 @@ describe("Tasks API resource", function () {
     return runServer(TEST_DATABASE_URL);
   });
 
+
   beforeEach(function () {
+    // request.post("/api/users/register")
+    //   .send({
+    //     role: "parent",
+    //     username: "mario",
+    //     password: "password-mario",
+    //     familyCode: "mariobros"
+    //   })
+    
+    // request.post("/api/auth/login")
+    //   .send({
+    //     username: "mario",
+    //     password: "password-mario"
+    //   })
+    //   .end(function(err, res) {
+    //     if (err) throw err;
+    //     token = { access_token: res.body.token }
+    //   });
+
     return seedTasks();
   });
 
@@ -59,7 +82,9 @@ describe("Tasks API resource", function () {
   describe("GET endpoint", function () {
     it("should return all tasks", function () {
       let res;
+      //console.log("[[[ TOKEN ]]]", token)
       return chai.request(app)
+        //.query(token)
         .get("/api/tasks/schwarzeneggerT800")
         .then(function (_res) {
           res = _res;
