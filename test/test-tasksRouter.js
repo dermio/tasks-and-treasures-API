@@ -11,10 +11,6 @@ const should = chai.should();
 chai.use(chaiHttp);
 
 
-// Auth
-// var request = require('supertest')(app);
-// var token;
-
 /* this function deletes the entire database.
 we'll call it in an `afterEach` block below
 to ensure data from one test does not stick
