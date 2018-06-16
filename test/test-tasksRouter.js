@@ -82,7 +82,7 @@ describe("Tasks API resource", function () {
 
   const token = createAuthToken({ username, role, password });
 
-  // Or create own token function
+  // If don't use createAuthToken funtion, create own token function
   /* const token = jwt.sign(
     {
       user: {
@@ -103,7 +103,7 @@ describe("Tasks API resource", function () {
       let res;
       return chai.request(app)
         .get(`/api/tasks/${familyCode}`)
-        .set('Authorization', `Bearer ${token}`)
+        .set("Authorization", `Bearer ${token}`)
         .then(function (_res) {
           res = _res;
           res.should.have.status(200);
@@ -121,30 +121,31 @@ describe("Tasks API resource", function () {
     });
   });
 
-  // describe("POST endpoint", function () {
-  //   it("should add a new task", function () {
-  //     let newTask = generateTaskData();
+  describe("POST endpoint", function () {
+    it("should add a new task", function () {
+      let newTask = generateTaskData();
 
-  //     return chai
-  //       .request(app)
-  //       .post("/api/tasks")
-  //       .send(newTask)
-  //       .then(function (res) {
-  //         res.should.have.status(201);
-  //         res.should.be.json;
-  //         res.should.be.a("object");
-  //         res.body.should.include.keys("taskName", "familyCode");
-  //         res.body.taskName.should.equal(newTask.taskName);
-  //         res.body.id.should.not.be.null;
-  //         res.body.familyCode.should.equal(newTask.familyCode);
-  //         return Task.findById(res.body.id);
-  //       })
-  //       .then(function (task) { // task is a single doc from Mongo
-  //         task.taskName.should.equal(newTask.taskName);
-  //         task.familyCode.should.equal(newTask.familyCode);
-  //       });
-  //   });
-  // });
+      return chai
+        .request(app)
+        .post("/api/tasks")
+        .set("Authorization", `Bearer ${token}`)
+        .send(newTask)
+        .then(function (res) {
+          res.should.have.status(201);
+          res.should.be.json;
+          res.should.be.a("object");
+          res.body.should.include.keys("taskName", "familyCode");
+          res.body.taskName.should.equal(newTask.taskName);
+          res.body.id.should.not.be.null;
+          res.body.familyCode.should.equal(newTask.familyCode);
+          return Task.findById(res.body.id);
+        })
+        .then(function (task) { // task is a single doc from Mongo
+          task.taskName.should.equal(newTask.taskName);
+          task.familyCode.should.equal(newTask.familyCode);
+        });
+    });
+  });
 
   // describe("DELETE endpoint", function () {
   //   it("should delete a task", function () {
