@@ -12,7 +12,7 @@ chai.use(chaiHttp);
 
 
 // Testing Authentication for protected endpoints
-// const jwt = require('jsonwebtoken'); Use `jwt` if I write my own Token
+// const jwt = require("jsonwebtoken"); Use `jwt` if I write my own Token
 const { JWT_SECRET } = require("../config");
 const { createAuthToken } = require("../auth/router");
 const { User } = require("../users");
@@ -24,7 +24,7 @@ we'll call it in an `afterEach` block below
 to ensure data from one test does not stick
 around for next one */
 function tearDownDb() {
-  console.warn('Deleting database');
+  console.warn("Deleting database");
   return mongoose.connection.dropDatabase();
 }
 
@@ -44,10 +44,10 @@ function generateTaskData() {
 }
 
 describe("Tasks API resource", function () {
-  const username = 'exampleUser';
-  const password = 'examplePass';
-  const role = 'Example';
-  const familyCode = 'schwarzeneggerT800';
+  const username = "exampleUser";
+  const password = "examplePass";
+  const role = "Example";
+  const familyCode = "schwarzeneggerT800";
 
 
   // we need each of these hook functions to return a promise
