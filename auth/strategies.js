@@ -40,6 +40,18 @@ const localStrategy = new LocalStrategy((username, password, callback) => {
     });
 });
 
+// Example of my own LocalStrategy
+/* const localStrategy = new LocalStrategy((username, password, done) => {
+  if (username === "test" && password === "test") {
+    return User.findOne({})
+              .then(user => {
+                done(null, user);
+              });
+  }
+
+  return done(null, false);
+}); */
+
 const jwtStrategy = new JwtStrategy(
   {
     secretOrKey: JWT_SECRET,
