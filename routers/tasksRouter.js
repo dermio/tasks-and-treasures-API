@@ -6,14 +6,14 @@ const jsonParser = bodyParser.json();
 
 const { Task } = require("../models/taskModel");
 
-// Auth
-const passport = require('passport');
 
-const jwtAuth = passport.authenticate('jwt', {session: false});
+// Authenticate all CRUD protected endpoints with `jwtAuth` middleware
+const passport = require("passport");
+const jwtAuth = passport.authenticate("jwt", {session: false});
 
 
 // GET all tasks, for Parent and Child user with particular family code.
-router.get("/:familyCode", jwtAuth, (req, res) => {
+router.get("/:familyCode", (req, res) => {
   Task.find({ familyCode: req.params.familyCode })
       .then((tasks) => {
         res.json(tasks.map(task => task.serialize()));

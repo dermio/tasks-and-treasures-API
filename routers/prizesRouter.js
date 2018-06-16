@@ -6,10 +6,10 @@ const jsonParser = bodyParser.json();
 
 const { Prize } = require("../models/prizeModel");
 
-// Auth
-const passport = require('passport');
 
-const jwtAuth = passport.authenticate('jwt', {session: false});
+// Authenticate all CRUD protected endpoints with `jwtAuth` middleware
+const passport = require("passport");
+const jwtAuth = passport.authenticate("jwt", {session: false});
 
 
 // GET prize (prizes), for Parent and Child User with particular family code.
