@@ -80,7 +80,7 @@ describe("Tasks API resource", function () {
     return closeServer();
   });
 
-  const token = createAuthToken({ username, role, password });
+  const token = createAuthToken({ username, role, password }); // familyCode?
 
   // If don't use createAuthToken funtion, create own token function
   /* const token = jwt.sign(
