@@ -14,6 +14,7 @@ chai.use(chaiHttp);
 // Testing Authentication for protected endpoints
 // const jwt = require('jsonwebtoken'); Use `jwt` if I write my own Token
 const { JWT_SECRET } = require("../config");
+const { createAuthToken } = require("../auth/router");
 const { User } = require("../users");
 const expect = chai.expect;
 
@@ -57,7 +58,6 @@ describe("Tasks API resource", function () {
     return runServer(TEST_DATABASE_URL);
   });
 
-
   beforeEach(function () {
     // Need to create a User and seed the database
     return User.hashPassword(password).then(password =>
@@ -79,6 +79,8 @@ describe("Tasks API resource", function () {
   after(function () {
     return closeServer();
   });
+
+  const token = createAuthToken({ username, role, password });
 
   // describe("GET endpoint", function () {
   //   it("should return all tasks", function () {
