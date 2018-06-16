@@ -82,6 +82,22 @@ describe("Tasks API resource", function () {
 
   const token = createAuthToken({ username, role, password });
 
+  // Or create own token function
+  /* const token = jwt.sign(
+    {
+      user: {
+        username,
+        role,
+        familyCode
+      }
+    },
+    "fishing", // or JWT_SECRET
+    {
+      algorithm: "HS256",
+      expiresIn: "7d"
+    }
+  ); */
+
   // describe("GET endpoint", function () {
   //   it("should return all tasks", function () {
   //     let res;
