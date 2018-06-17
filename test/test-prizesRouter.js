@@ -83,6 +83,24 @@ describe("Prizes API resource", function () {
     return closeServer();
   });
 
+  const token = createAuthToken({ username, role, password }); // familyCode?
+
+  // If don't use createAuthToken funtion, create own token function
+  /* const token = jwt.sign(
+    {
+      user: {
+        username,
+        role,
+        familyCode
+      }
+    },
+    "fishing", // or JWT_SECRET
+    {
+      algorithm: "HS256",
+      expiresIn: "7d"
+    }
+  ); */
+
   describe("GET endpoint", function () {
     it("should return the prize", function () {
       let res;
