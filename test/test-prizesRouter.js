@@ -158,7 +158,8 @@ describe("Prizes API resource", function () {
         .findOne()
         .then(function (_prize) {
           prize = _prize;
-          return chai.request(app).delete(`/api/prizes/${prize.id}`);
+          return chai.request(app).delete(`/api/prizes/${prize.id}`)
+                    .set("Authorization", `Bearer ${token}`);
         })
         .then(function (res) {
           res.should.have.status(204);
