@@ -13,7 +13,7 @@ const jwtAuth = passport.authenticate("jwt", {session: false});
 
 
 // GET prize (prizes), for Parent and Child User with particular family code.
-router.get("/:familyCode", (req, res) => {
+router.get("/:familyCode", jwtAuth, (req, res) => {
   Prize.find({ familyCode: req.params.familyCode })
        .then((prizes) => {
          res.json(prizes.map(prize => prize.serialize()));
