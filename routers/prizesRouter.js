@@ -67,7 +67,7 @@ router.delete("/:id", jwtAuth, (req, res) => {
 });
 
 // PUT prize, for Parent User
-router.put("/:id", jsonParser, (req, res) => {
+router.put("/:id", jsonParser, jwtAuth, (req, res) => {
   // ensure that the id in the request path and the one in request body match
   if (!(req.params.id && req.body.id && req.params.id === req.body.id)) {
     let message = `Request path id (${req.params.id}) and ` +
