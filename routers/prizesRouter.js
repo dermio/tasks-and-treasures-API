@@ -55,7 +55,7 @@ router.post("/", jsonParser, jwtAuth, (req, res) => {
 });
 
 // DELETE prize, for Parent User
-router.delete("/:id", (req, res) => {
+router.delete("/:id", jwtAuth, (req, res) => {
   Prize.findByIdAndRemove(req.params.id)
       .then(() => {
         console.log(`Deleted prize with id \`${req.params.id}\``);
