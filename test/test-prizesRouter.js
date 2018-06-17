@@ -106,6 +106,7 @@ describe("Prizes API resource", function () {
       let res;
       return chai.request(app)
         .get("/api/prizes/schwarzeneggerT800")
+        .set("Authorization", `Bearer ${token}`)
         .then(function (_res) {
           res = _res;
           res.should.have.status(200);
