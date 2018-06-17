@@ -105,7 +105,7 @@ describe("Prizes API resource", function () {
     it("should return the prize", function () {
       let res;
       return chai.request(app)
-        .get("/api/prizes/schwarzeneggerT800")
+        .get(`/api/prizes/${familyCode}`)
         .set("Authorization", `Bearer ${token}`)
         .then(function (_res) {
           res = _res;
