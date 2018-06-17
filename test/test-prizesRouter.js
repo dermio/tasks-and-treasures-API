@@ -191,6 +191,7 @@ describe("Prizes API resource", function () {
           it reflects the data that was sent */
           return chai.request(app)
             .put(`/api/prizes/${prize.id}`)
+            .set("Authorization", `Bearer ${token}`)
             .send(updateData);
         })
         .then(function (res) {
