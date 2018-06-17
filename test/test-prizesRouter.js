@@ -131,6 +131,7 @@ describe("Prizes API resource", function () {
       return chai
         .request(app)
         .post("/api/prizes")
+        .set("Authorization", `Bearer ${token}`)
         .send(newPrize)
         .then(function (res) {
           res.should.have.status(201);
