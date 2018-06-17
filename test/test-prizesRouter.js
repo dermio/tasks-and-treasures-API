@@ -47,6 +47,12 @@ function generatePrizeData() {
 }
 
 describe("Prizes API resource", function () {
+  const username = "exampleUser";
+  const password = "examplePass";
+  const role = "Example";
+  const familyCode = "schwarzeneggerT800";
+
+
   // we need each of these hook functions to return a promise
   // otherwise we'd need to call a `done` callback. `runServer`,
   // `seedPrizes` and `tearDownDb` each return a promise,
@@ -56,11 +62,21 @@ describe("Prizes API resource", function () {
   });
 
   beforeEach(function () {
-    return seedPrizes();
+    // Need to create a User and seed the database
+    return User.hashPassword(password).then(password =>
+      User.create({
+        username,
+        password,
+        role,
+        familyCode
+      })
+    )
+    .then(seedPrizes);
   });
 
   afterEach(function () {
-    return tearDownDb();
+    // Need to remove the User and tear down the database
+    return User.remove({}).then(tearDownDb);
   });
 
   after(function () {
