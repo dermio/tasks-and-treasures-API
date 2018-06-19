@@ -3,9 +3,10 @@ const app = express();
 const mongoose = require("mongoose");
 const morgan = require("morgan");
 const passport = require("passport");
+const cors = require("cors");
 require("dotenv").config();
 
-const { PORT, DATABASE_URL } = require("./config");
+const { PORT, DATABASE_URL, CLIENT_ORIGIN } = require("./config");
 
 const tasksRouter = require("./routers/tasksRouter");
 const prizesRouter = require("./routers/prizesRouter");
@@ -34,6 +35,9 @@ app.use(function (req, res, next) {
   }
   next();
 });
+
+app.use(cors({ origin: CLIENT_ORIGIN }));
+
 
 app.use("/api/users/", usersRouter);
 app.use("/api/auth/", authRouter);
