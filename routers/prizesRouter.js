@@ -46,7 +46,7 @@ router.post("/", jsonParser, jwtAuth, (req, res) => {
   Prize.deleteMany({
     familyCode: req.body.familyCode
   })
-  .then(() => 
+  .then(() =>
     Prize.create({
       prizeName: req.body.prizeName,
       familyCode: req.body.familyCode
