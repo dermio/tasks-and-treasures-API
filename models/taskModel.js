@@ -14,7 +14,7 @@ const taskSchema = mongoose.Schema({
   dueDate: {
     // compare End to Start date, also see Mongoose timestamps option
     type: Date,
-    default: Date.now
+    default: Date.now()
   },
   completedByUser: {
     type: mongoose.Schema.Types.ObjectId,
