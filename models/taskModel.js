@@ -30,7 +30,8 @@ taskSchema.methods.serialize = function () {
   return {
     id: this._id,
     taskName: this.taskName,
-    familyCode: this.familyCode
+    familyCode: this.familyCode,
+    completedDate: this.completedDate
   };
 };
 
