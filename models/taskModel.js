@@ -12,8 +12,9 @@ const taskSchema = mongoose.Schema({
   // - completed at Date, expiration date,
   // - completed by User, need Ref to user table
   dueDate: {
-    // compare End to Start date
-    type: Date.now
+    // compare End to Start date, also see Mongoose timestamps option
+    type: Date,
+    default: Date.now
   },
   completedByUser: {
     type: mongoose.Schema.Types.ObjectId,
