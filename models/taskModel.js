@@ -8,9 +8,21 @@ const taskSchema = mongoose.Schema({
   familyCode: {
     type: String,
     required: true
-  }
+  },
   // - completed at Date, expiration date,
   // - completed by User, need Ref to user table
+  dueDate: {
+    // compare End to Start date
+    type: Date.now
+  },
+  completedByUser: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  },
+  completed: {
+    type: Boolean,
+    default: false
+  }
 });
 
 taskSchema.methods.serialize = function () {
