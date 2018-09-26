@@ -18,6 +18,7 @@ const taskSchema = mongoose.Schema({
   },
   completedByUser: {
     type: mongoose.Schema.Types.ObjectId,
+    default: null,
     ref: "User"
   },
   completedDate: {
@@ -31,7 +32,8 @@ taskSchema.methods.serialize = function () {
     id: this._id,
     taskName: this.taskName,
     familyCode: this.familyCode,
-    completedDate: this.completedDate
+    completedDate: this.completedDate,
+    completedByUser: this.completedByUser
   };
 };
 
