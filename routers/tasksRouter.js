@@ -105,7 +105,12 @@ router.put("/:id/completed", jsonParser, jwtAuth, (req, res) => {
     res.status(400).json( {message: message} );
   }
 
-  const toUpdate = {
+  /* This is the shorthand way to write the `toUpdate` object.
+  It gets rid of the `updateableFields` array. The `completed` field
+  in req.body is a Boolean that indicates if the Child user clicked
+  the checkbox for completing a task. */
+  let toUpdate = {
+    // `completedDate` is a field in the Mongo Task document
     completedDate: (req.body.completed) ? Date.now() : null
   };
 
