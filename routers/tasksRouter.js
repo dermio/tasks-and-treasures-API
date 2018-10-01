@@ -15,6 +15,8 @@ const jwtAuth = passport.authenticate("jwt", {session: false});
 // GET all tasks, for Parent and Child user with particular family code.
 router.get("/:familyCode", jwtAuth, (req, res) => {
   Task.find({ familyCode: req.params.familyCode })
+      // .populate("completedByUser")
+      // .exec()
       .then((tasks) => {
         res.json(tasks.map(task => task.serialize()));
       })
