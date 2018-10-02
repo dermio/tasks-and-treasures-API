@@ -107,6 +107,8 @@ router.put("/:id/completed", jsonParser, jwtAuth, (req, res) => {
     res.status(400).json( {message: message} );
   }
 
+  console.log("[[[ REQ.BODY PUT REQUEST ]]]", req.body)
+
   /* This is the shorthand way to write the `toUpdate` object.
   It gets rid of the `updateableFields` array. The `completed` field
   in req.body is a Boolean that indicates if the Child user clicked
@@ -114,12 +116,17 @@ router.put("/:id/completed", jsonParser, jwtAuth, (req, res) => {
   let toUpdate = {
     // `completedDate` is a field in the Mongo Task document
     completedDate: (req.body.completed) ? Date.now() : null
+
+    // Code below added by mentor
+    // completedByUser: req.user._id
   };
 
   Task
     /* all key/value pairs in toUpdate will be updated
     -- that's what `$set` does */
     .findByIdAndUpdate(req.params.id, {$set: toUpdate})
+    // .populate("completedByUser")
+    // .exec()
     .then(task => {
       // console.log(task); // the document with updated fields
       res.status(204).end();
