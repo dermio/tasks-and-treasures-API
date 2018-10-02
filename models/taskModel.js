@@ -27,6 +27,14 @@ const taskSchema = mongoose.Schema({
   }
 });
 
+/* mentor code */
+// taskSchema.pre("find", function () {
+//   this.populate("completedByUser")
+// });
+// taskSchema.pre("findOne", function () {
+//   this.populate("completedByUser")
+// });
+
 taskSchema.methods.serialize = function () {
   return {
     id: this._id,
@@ -37,6 +45,7 @@ taskSchema.methods.serialize = function () {
   };
 };
 
-const Task = mongoose.model("tasks", taskSchema);
+// const Task = mongoose.model("tasks", taskSchema); // old code
+const Task = mongoose.model("Task", taskSchema);
 
 module.exports = { Task };
