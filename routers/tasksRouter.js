@@ -15,8 +15,8 @@ const jwtAuth = passport.authenticate("jwt", {session: false});
 // GET all tasks, for Parent and Child user with particular family code.
 router.get("/:familyCode", jwtAuth, (req, res) => {
   Task.find({ familyCode: req.params.familyCode })
-      // .populate("completedByUser")
-      // .exec()
+      .populate("completedByUser")
+      .exec()
       .then((tasks) => {
         res.json(tasks.map(task => task.serialize()));
       })
@@ -107,7 +107,11 @@ router.put("/:id/completed", jsonParser, jwtAuth, (req, res) => {
     res.status(400).json( {message: message} );
   }
 
-  console.log("[[[ REQ.BODY PUT REQUEST ]]]", req.body)
+  console.log("[[[ REQ.BODY PUT REQUEST ]]]", req.body);
+
+  /* The jwtAuth middleware contains info for req.user.
+  It's unnecessary to pass user info for the PUT request. */
+  console.log(req.user);
 
   /* This is the shorthand way to write the `toUpdate` object.
   It gets rid of the `updateableFields` array. The `completed` field
@@ -115,23 +119,14 @@ router.put("/:id/completed", jsonParser, jwtAuth, (req, res) => {
   the checkbox for completing a task. */
   let toUpdate = {
     // `completedDate` is a field in the Mongo Task document
-    completedDate: (req.body.completed) ? Date.now() : null
-
-    // Code below added by mentor
-    // completedByUser: req.user._id
+    completedDate: (req.body.completed) ? Date.now() : null,
+    // req.user._id comes from jwtAuth middleware
+    completedByUser: (req.body.completed) ? req.user.id : null
   };
 
-  Task
-    /* all key/value pairs in toUpdate will be updated
-    -- that's what `$set` does */
-    .findByIdAndUpdate(req.params.id, {$set: toUpdate})
-    // .populate("completedByUser")
-    // .exec()
-    .then(task => {
-      // console.log(task); // the document with updated fields
-      res.status(204).end();
-    })
-    .catch(err => res.status(500).json( {message: "Internal server error"} ));
+  Task.findByIdAndUpdate(req.params.id, { $set: toUpdate })
+    .then(task => res.status(204).end())
+    .catch(err => res.status(500).json({ message: "Internal server error" }));
 });
 
 module.exports = router;
