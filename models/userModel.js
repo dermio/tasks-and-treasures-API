@@ -6,8 +6,12 @@ const userSchema = mongoose.Schema({
   username: {type: String, required: true /* , unique: true */},
   password: {type: String, required: true}, // password stored as HASH
   familyCode: {type: String, required: true},
+
+  // The two fields are optional, not used in the Redux store for now.
   completedTasks: [String], // not required, for Child user
   approved: {type: Boolean}, // not required, for Child user
+
+  tasksReadyForReview: Boolean, // for Child user
 
   email: {type: String /* , unique: true, required: true */}
 });
@@ -20,8 +24,12 @@ userSchema.methods.serialize = function () {
     username: this.username,
     password: this.password, // Should hashed password be returned?
     familyCode: this.familyCode,
+
+    // The two fields are optional, not used in the Redux store for now.
     completedTasks: this.completedTasks,
     approved: this.approved,
+
+    tasksReadyForReview: this.tasksReadyForReview,
 
     email: this.email
   };
