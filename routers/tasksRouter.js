@@ -129,4 +129,16 @@ router.put("/:id/completed", jsonParser, jwtAuth, (req, res) => {
     .catch(err => res.status(500).json({ message: "Internal server error" }));
 });
 
+
+// PUT request for Parent to approve Child's tasks completion
+router.put("/requestReview", jwtAuth, (req, res) => {
+  const toUpdate = {
+    tasksReadyForReview: true
+  };
+
+  User.findByIdAndUpdate(req.user.id, { $set: toUpdate })
+    .then(() => res.status(204).end())
+    .catch(err => res.status(500).json({ message: "Internal server error" }));
+});
+
 module.exports = router;
