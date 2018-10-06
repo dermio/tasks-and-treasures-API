@@ -12,8 +12,6 @@ const taskSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  // - completed at Date, expiration date,
-  // - completed by User, need Ref to user table
   dueDate: {
     // compare End to Start date, also see Mongoose timestamps option
     type: Date,
@@ -29,14 +27,6 @@ const taskSchema = mongoose.Schema({
     default: null
   }
 });
-
-/* mentor code */
-// taskSchema.pre("find", function () {
-//   this.populate("completedByUser")
-// });
-// taskSchema.pre("findOne", function () {
-//   this.populate("completedByUser")
-// });
 
 taskSchema.methods.serialize = function () {
   return {
