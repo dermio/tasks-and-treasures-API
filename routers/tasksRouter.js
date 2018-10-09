@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json();
 
 const { Task } = require("../models/taskModel");
+const { User } = require("../models/userModel");
 
 
 // Authenticate all CRUD protected endpoints with `jwtAuth` middleware
@@ -130,9 +131,9 @@ router.put("/:id/completed", jsonParser, jwtAuth, (req, res) => {
 });
 
 
-// PUT request for Parent to approve Child's tasks completion
-router.put("/requestReview", jwtAuth, (req, res) => {
-  const toUpdate = {
+// PUT, Child notifies parent their task list is done
+router.put("/request/review", jwtAuth, (req, res) => {
+  let toUpdate = {
     tasksReadyForReview: true
   };
 
@@ -140,5 +141,17 @@ router.put("/requestReview", jwtAuth, (req, res) => {
     .then(() => res.status(204).end())
     .catch(err => res.status(500).json({ message: "Internal server error" }));
 });
+
+
+// GET, Parent checks (or refreshes) if any children clicked the done button
+router.get("/children/status", jwtAuth, (req, res) => {
+  let familyCode = req.user.familyCode;
+
+  User.find({ familyCode, role: "child" })
+    .then(users => {
+      res.json({ users });
+    })
+});
+
 
 module.exports = router;
