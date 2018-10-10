@@ -134,9 +134,14 @@ router.put("/:id/completed", jsonParser, jwtAuth, (req, res) => {
 // PUT, Child notifies parent their task list is done
 router.put("/request/review", jwtAuth, (req, res) => {
   let toUpdate = {
+    /* Property in User model, indicates Child finished tasks.
+    Parent can see which of their Child users finished all tasks. */
     tasksReadyForReview: true
   };
 
+  /* Although this is a PUT request to the Tasks route that shows the
+  Child user finished all tasks, we need to use the User model to find
+  which Child user finished the tasks. */
   User.findByIdAndUpdate(req.user.id, { $set: toUpdate })
     .then(() => res.status(204).end())
     .catch(err => res.status(500).json({ message: "Internal server error" }));
