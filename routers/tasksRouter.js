@@ -150,8 +150,15 @@ router.put("/request/review", jwtAuth, (req, res) => {
 
 // GET, Parent checks (or refreshes) if any children clicked the done button
 router.get("/children/status", jwtAuth, (req, res) => {
+  /* The logged in Parent grabs their familyCode.
+  The family code is used to find all the Parent's Child users.
+  The jwtAuth middleware contains info for req.user. */
   let familyCode = req.user.familyCode;
 
+  /* Although this is a GET request to the Tasks route, we use the
+  User model to find which Child user finished the tasks.
+  The Parent user uses `familyCode` and `role: child` to find their
+  Child users. */
   User.find({ familyCode, role: "child" })
     .then(users => {
       res.json({ users });
