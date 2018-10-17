@@ -17,15 +17,25 @@ const taskSchema = mongoose.Schema({
     type: Date,
     default: Date.now()
   },
-  completedByUser: {
-    type: mongoose.Schema.Types.ObjectId,
-    default: null,
-    ref: "User"
-  },
-  completedDate: {
-    type: Date,
-    default: null
-  }
+  assignedUsers: [
+    { // this is one User
+      type: mongoose.Schema.Types.ObjectId,
+      default: null,
+      ref: "User"
+    }
+  ],
+  completions: [
+    {
+      completedDate: {
+        type: Date,
+        default: null
+      },
+      completedByUser: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+      }
+    }
+  ]
 });
 
 taskSchema.methods.serialize = function () {
@@ -33,8 +43,11 @@ taskSchema.methods.serialize = function () {
     id: this._id,
     taskName: this.taskName,
     familyCode: this.familyCode,
-    completedDate: this.completedDate,
-    completedByUser: this.completedByUser
+    completions: this.completions
+
+    /*****
+    * Need to add virtual method for completed by User, logged in user
+    *****/
   };
 };
 
