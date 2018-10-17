@@ -16,7 +16,7 @@ const jwtAuth = passport.authenticate("jwt", {session: false});
 // GET all tasks, for Parent and Child user with particular family code.
 router.get("/:familyCode", jwtAuth, (req, res) => {
   Task.find({ familyCode: req.params.familyCode })
-      .populate("completedByUser")
+      .populate("completions")
       .exec()
       .then((tasks) => {
         res.json(tasks.map(task => task.serialize()));
@@ -118,16 +118,34 @@ router.put("/:id/completed", jsonParser, jwtAuth, (req, res) => {
   It gets rid of the `updateableFields` array. The `completed` field
   in req.body is a Boolean that indicates if the Child user clicked
   the checkbox for completing a task. */
-  let toUpdate = {
-    // `completedDate` is a field in the Mongo Task document
-    completedDate: (req.body.completed) ? Date.now() : null,
-    // req.user._id comes from jwtAuth middleware
-    completedByUser: (req.body.completed) ? req.user.id : null
-  };
 
-  Task.findByIdAndUpdate(req.params.id, { $set: toUpdate })
-    .then(task => res.status(204).end())
-    .catch(err => res.status(500).json({ message: "Internal server error" }));
+  if (req.body.completed) {
+    let toUpdate = {
+      // `completedDate` is a field in the Mongo Task document
+      completedDate: (req.body.completed) ? Date.now() : null,
+      // req.user._id comes from jwtAuth middleware
+      completedByUser: req.user.id
+    };
+
+    let toPush = {
+      completions: toUpdate
+    };
+
+    Task.findByIdAndUpdate(req.params.id, { $push: toPush })
+      .then(task => res.status(204).end())
+      .catch(err => res.status(500).json({ message: "Internal server error" }));
+  }
+  else {
+    let toPull = {
+      completions: {
+        completedByUser: req.user.id
+      }
+    };
+
+    Task.findByIdAndUpdate(req.params.id, { $pull: toPull })
+      .then(task => res.status(204).end())
+      .catch(err => res.status(500).json({ message: "Internal server error" }));
+  }
 });
 
 
