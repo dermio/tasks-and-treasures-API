@@ -52,7 +52,7 @@ taskSchema.methods.serialize = function () {
 };
 
 // Stubbed virtual for `completion`
-taskSchema.virtual("completionTask")
+taskSchema.virtual("taskCompletionsByUser")
   .get(function () {
     let completion = this.completions
                       .find(task => task.completedByUser === req.user.id);
