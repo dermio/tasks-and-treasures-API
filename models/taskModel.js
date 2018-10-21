@@ -43,13 +43,27 @@ taskSchema.methods.serialize = function () {
     id: this._id,
     taskName: this.taskName,
     familyCode: this.familyCode,
-    completions: this.completions
+    completions: this.completions //Should completions be inside the virtual?
 
     /*****
     * Need to add virtual method for completed by User, logged in user
     *****/
   };
 };
+
+// Stubbed virtual for `completion`
+taskSchema.virtual("completionTask")
+  .get(function () {
+    let completion = this.completions
+                      .find(task => task.completedByUser === req.user.id);
+    return {
+      id: this._id,
+      taskName: this.taskName,
+      familyCode: this.familyCode,
+      completedByUser: completion ? completions.completedByUser : null,
+      completedDate: completion ? completios.completedDate : null
+    };
+  });
 
 // const Task = mongoose.model("tasks", taskSchema); // old code
 const Task = mongoose.model("Task", taskSchema);
