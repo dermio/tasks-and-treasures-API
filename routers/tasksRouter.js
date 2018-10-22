@@ -122,7 +122,6 @@ router.put("/:id/completed", jsonParser, jwtAuth, (req, res) => {
   in req.body is a Boolean that indicates if the Child user clicked
   the checkbox for completing a task. */
 
-  console.log('[[[ ]]]')
   if (req.body.completed) {
     let toUpdate = {
       // `completedDate` is a field in the Mongo Task document
