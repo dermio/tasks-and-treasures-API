@@ -19,6 +19,7 @@ router.get("/:familyCode", jwtAuth, (req, res) => {
       .populate("completions")
       .exec()
       .then((tasks) => {
+        console.log("[[[ req.user.id ]]]", req.user.id);
         console.log("[[[ TASKS ]]]", tasks)
         return res.json(tasks.map(task => task.serialize()));
         // res.json(tasks.map(task => task.taskCompletionsByUser));
