@@ -19,8 +19,8 @@ router.get("/:familyCode", jwtAuth, (req, res) => {
       .populate("completions")
       .exec()
       .then((tasks) => {
-        console.log("[[[ req.user.id ]]]", req.user.id);
-        console.log("[[[ TASKS ]]]", tasks)
+        // console.log("[[[ req.user.id ]]]", req.user.id);
+        // console.log("[[[ TASKS ]]]", tasks)
         return res.json(tasks.map(task => task.serialize()));
         // res.json(tasks.map(task => task.taskCompletionsByUser));
       })
@@ -115,13 +115,14 @@ router.put("/:id/completed", jsonParser, jwtAuth, (req, res) => {
 
   /* The jwtAuth middleware contains info for req.user.
   It's unnecessary to pass user info for the PUT request. */
-  console.log(req.user);
+  console.log("[[[ REQ.USER ]]]", req.user);
 
   /* This is the shorthand way to write the `toUpdate` object.
   It gets rid of the `updateableFields` array. The `completed` field
   in req.body is a Boolean that indicates if the Child user clicked
   the checkbox for completing a task. */
 
+  console.log('[[[ ]]]')
   if (req.body.completed) {
     let toUpdate = {
       // `completedDate` is a field in the Mongo Task document
@@ -134,8 +135,11 @@ router.put("/:id/completed", jsonParser, jwtAuth, (req, res) => {
       completions: toUpdate
     };
 
-    Task.findByIdAndUpdate(req.params.id, { $push: toPush })
-      .then(task => res.status(204).end())
+    Task.findByIdAndUpdate(req.params.id, toPush)
+      .then(task => {
+        console.log("[[[ TASK UPDATE, ADD CHECK TO BOX ]]]", task);
+        res.status(204).end()
+      })
       .catch(err => res.status(500).json({ message: "Internal server error" }));
   }
   else {
@@ -145,8 +149,11 @@ router.put("/:id/completed", jsonParser, jwtAuth, (req, res) => {
       }
     };
 
-    Task.findByIdAndUpdate(req.params.id, { $pull: toPull })
-      .then(task => res.status(204).end())
+    Task.findByIdAndUpdate(req.params.id, toPull)
+      .then(task => {
+        console.log("[[[ TASK UPDATE, REMOVE CHECK TO BOX ]]]", task)
+        res.status(204).end()
+      })
       .catch(err => res.status(500).json({ message: "Internal server error" }));
   }
 });
