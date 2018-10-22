@@ -38,12 +38,15 @@ const taskSchema = mongoose.Schema({
   ]
 });
 
-taskSchema.methods.serialize = function () {
+taskSchema.methods.serialize = function () { // pass `req.user.id` to serialize
   return {
     id: this._id,
     taskName: this.taskName,
     familyCode: this.familyCode,
-    completions: this.completions //Should completions be inside the virtual?
+    completions: this.completions, //Should completions be inside the virtual?
+
+    // Chris A. bit of code
+    // completedDate: null or some date value
 
     /*****
     * Need to add virtual method for completed by User, logged in user
@@ -60,8 +63,16 @@ taskSchema.virtual("taskCompletionsByUser")
       id: this._id,
       taskName: this.taskName,
       familyCode: this.familyCode,
-      completedByUser: completion ? completions.completedByUser : null,
-      completedDate: completion ? completios.completedDate : null
+      // completedByUser: completion ? completions.completedByUser : null,
+      // completedDate: completion ? completios.completedDate : null
+      completions: [
+        {
+          completedDate: completion ? this.completion.completedDate : null
+        },
+        {
+          completedByUser: completion ? this.completion.completedByUser : null
+        }
+      ]
     };
   });
 
