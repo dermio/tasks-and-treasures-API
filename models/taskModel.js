@@ -38,7 +38,8 @@ const taskSchema = mongoose.Schema({
   ]
 });
 
-taskSchema.methods.serialize = function (userId) { // pass `req.user.id` to serialize
+taskSchema.methods.serialize = function (reqUser) { // pass `req.user` to serialize
+  console.log("[[[ serialize method taskSchema ]]]", reqUser);
 // let completion = this.completions
 //                       .find(task => task.completedByUser === req.user.id);
   return {
