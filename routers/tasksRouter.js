@@ -117,23 +117,7 @@ router.put("/:id/completed", jsonParser, jwtAuth, (req, res) => {
   It's unnecessary to pass user info for the PUT request. */
   console.log("[[[ REQ.USER ]]]", req.user);
 
-  /* This is the shorthand way to write the `toUpdate` object.
-  It gets rid of the `updateableFields` array. The `completed` field
-  in req.body is a Boolean that indicates if the Child user clicked
-  the checkbox for completing a task. */
-
   if (req.body.completed) {
-    let toUpdate = {
-      // `completedDate` is a field in the Mongo Task document
-      completedDate: (req.body.completed) ? Date.now() : null,
-      // req.user._id comes from jwtAuth middleware
-      completedByUser: req.user.id
-    };
-
-    // let toPush = {
-    //   completions: toUpdate
-    // };
-
     let toPush = {
       $push: {
         completions: {
