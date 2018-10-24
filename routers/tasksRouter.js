@@ -130,8 +130,16 @@ router.put("/:id/completed", jsonParser, jwtAuth, (req, res) => {
       completedByUser: req.user.id
     };
 
+    // let toPush = {
+    //   completions: toUpdate
+    // };
+
     let toPush = {
-      completions: toUpdate
+      $push: {
+        completions: {
+          completedByUser: req.user.id
+        }
+      }
     };
 
     Task.findByIdAndUpdate(req.params.id, toPush)
@@ -143,8 +151,10 @@ router.put("/:id/completed", jsonParser, jwtAuth, (req, res) => {
   }
   else {
     let toPull = {
-      completions: {
-        completedByUser: req.user.id
+      $pull: {
+        completions: {
+          completedByUser: req.user.id
+        }
       }
     };
 
