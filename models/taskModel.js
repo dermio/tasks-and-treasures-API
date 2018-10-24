@@ -40,8 +40,10 @@ const taskSchema = mongoose.Schema({
 
 taskSchema.methods.serialize = function (reqUser) { // pass `req.user` to serialize
   console.log("[[[ serialize method taskSchema ]]]", reqUser);
-// let completion = this.completions
-//                       .find(task => task.completedByUser === req.user.id);
+  let completion = this.completions
+      .find(task => task.completedByUser === reqUser.id);
+  console.log("[[[ Child user completed task Y/N ]]]", completion);
+
   return {
     id: this._id,
     taskName: this.taskName,
@@ -57,27 +59,6 @@ taskSchema.methods.serialize = function (reqUser) { // pass `req.user` to serial
   };
 };
 
-// Stubbed virtual for `completion`
-taskSchema.virtual("taskCompletionsByUser")
-  .get(function () {
-    let completion = this.completions
-                      .find(task => task.completedByUser === req.user.id);
-    return {
-      id: this._id,
-      taskName: this.taskName,
-      familyCode: this.familyCode,
-      // completedByUser: completion ? completions.completedByUser : null,
-      // completedDate: completion ? completios.completedDate : null
-      completions: [
-        {
-          completedDate: completion ? this.completion.completedDate : null
-        },
-        {
-          completedByUser: completion ? this.completion.completedByUser : null
-        }
-      ]
-    };
-  });
 
 // const Task = mongoose.model("tasks", taskSchema); // old code
 const Task = mongoose.model("Task", taskSchema);
