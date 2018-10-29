@@ -156,7 +156,8 @@ router.put("/:id/completed", jsonParser, jwtAuth, (req, res) => {
 router.put("/request/review", jwtAuth, (req, res) => {
   let toUpdate = {
     /* Property in User model, indicates Child finished tasks.
-    Parent can see which of their Child users finished all tasks. */
+    Parent can see which of their Child users finished all tasks.
+    The approve child task button works, parent can award prize. */
     tasksReadyForReview: true
   };
 
