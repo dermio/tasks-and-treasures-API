@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
+// Need to require User model or the ref and populate() won't work
+require("./prizeModel");
+
 const userSchema = mongoose.Schema({
   role: {type: String, required: true},
   username: {type: String, required: true /* , unique: true */},
@@ -12,6 +15,13 @@ const userSchema = mongoose.Schema({
   approved: {type: Boolean}, // not required, for Child user
 
   tasksReadyForReview: Boolean, // for Child user
+  awardedPrizes: [
+    { // this is one Prize
+      type: mongoose.Schema.Types.ObjectId,
+      default: null,
+      ref: "Prize"
+    }
+  ], // for Child user
 
   email: {type: String /* , unique: true, required: true */}
 });
@@ -30,6 +40,7 @@ userSchema.methods.serialize = function () {
     approved: this.approved,
 
     tasksReadyForReview: this.tasksReadyForReview,
+    awardedPrizes: this.awardedPrizes,
 
     email: this.email
   };
