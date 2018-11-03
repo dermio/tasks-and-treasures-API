@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json();
 
 const { Prize } = require("../models/prizeModel");
+const { User } = require("../models/userModel");
 
 
 // Authenticate all CRUD protected endpoints with `jwtAuth` middleware
@@ -69,6 +70,37 @@ router.delete("/:id", jwtAuth, (req, res) => {
       .catch(err => {
         res.status(500).json({message: "Internal server error"});
       });
+});
+
+/* PUT prize, Parent approves tasks and awards Prize to Child.
+1) Find the prize by familyCode (logged in Parent). 2) Find
+the Child user Id based on the Child object sent in the req.body as JSON.
+3) Add the Prize to the Child user document. If field `awardedPrizes`
+is absent, the field is created that has an array value. The Prize value
+is pushed onto the array. */
+router.put("/current/award", jsonParser, jwtAuth, (req, res) => {
+  if (!(req.body.child && req.body.child._id)) {
+    let message = "Request user not provided";
+    console.error(message);
+    res.status(400).json( {message: message} );
+  }
+
+  let childUserId = req.body.child._id;
+
+  Prize.findOne({ familyCode: req.user.familyCode })
+    // .findByIdAndUpdate(req.params.id, {$set: toUpdate})
+    .then(prize => {
+      let toUpdate = {
+        $push: { // Add the prize onto array, to Child user doc
+          awardedPrizes: prize
+        }
+      };
+      return User.findByIdAndUpdate(childUserId, toUpdate);
+    })
+    .then(() => {
+      res.status(204).end();
+    })
+    .catch(err => res.status(500).json( {message: "Internal server error"} ));
 });
 
 // PUT prize, for Parent User
