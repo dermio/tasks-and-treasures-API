@@ -103,6 +103,22 @@ router.put("/current/award", jsonParser, jwtAuth, (req, res) => {
     .catch(err => res.status(500).json( {message: "Internal server error"} ));
 });
 
+router.put("/current/reject", jsonParser, jwtAuth, (req, res) => {
+  if (!(req.body.child && req.body.child._id)) {
+    let message = "Request user not provided";
+    console.error(message);
+    res.status(400).json( {message: message} );
+  }
+
+  let childUserId = req.body.child._id;
+
+  User.findByIdAndUpdate(childUserId, {tasksReadyForReview: false})
+    .then(() => {
+      res.status(204).end();
+    })
+    .catch(err => res.status(500).json( {message: "Internal server error"} ));
+});
+
 // PUT prize, for Parent User
 router.put("/:id", jsonParser, jwtAuth, (req, res) => {
   // ensure that the id in the request path and the one in request body match
