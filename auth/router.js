@@ -7,6 +7,8 @@ const jwt = require("jsonwebtoken");
 const config = require("../config");
 const router = express.Router();
 
+const { User } = require("../models/userModel");
+
 const createAuthToken = function (user) {
   return jwt.sign({user}, config.JWT_SECRET, {
     subject: user.username,
@@ -27,8 +29,13 @@ const jwtAuth = passport.authenticate("jwt", {session: false});
 
 // The user exchanges a valid JWT for a new one with a later expiration
 router.post("/refresh", jwtAuth, (req, res) => {
-  const authToken = createAuthToken(req.user);
-  res.json({authToken});
+  console.log("[[[ /refresh endpoint REQ.USER ]]]", req.user);
+  const userId = req.user.id || req.user._id;
+  User.findById(userId)
+    .then(user => {
+      const authToken = createAuthToken(user.serialize());
+      res.json({authToken});
+    })
 });
 
 // I exported createAuthToken function
