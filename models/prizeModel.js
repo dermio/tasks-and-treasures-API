@@ -13,6 +13,6 @@ prizeSchema.methods.serialize = function () {
   };
 };
 
-const Prize = mongoose.model("prizes", prizeSchema);
+const Prize = mongoose.model("Prize", prizeSchema);
 
 module.exports = { Prize };
