@@ -7,6 +7,8 @@ const jwt = require("jsonwebtoken");
 const config = require("../config");
 const router = express.Router();
 
+require("../models/prizeModel");
+
 const { User } = require("../models/userModel");
 
 const createAuthToken = function (user) {
@@ -21,8 +23,15 @@ const localAuth = passport.authenticate("local", {session: false});
 router.use(bodyParser.json());
 // The user provides a username and password to login
 router.post("/login", localAuth, (req, res) => {
-  const authToken = createAuthToken(req.user.serialize());
-  res.json({authToken});
+  const userId = req.user.id || req.user._id;
+  User.findById(userId)
+    .populate("awardedPrizes")
+    .then(user => {
+      console.log(user.serialize());
+      const authToken = createAuthToken(user.serialize());
+      res.json({authToken});
+    })
+
 });
 
 const jwtAuth = passport.authenticate("jwt", {session: false});
@@ -32,7 +41,9 @@ router.post("/refresh", jwtAuth, (req, res) => {
   console.log("[[[ /refresh endpoint REQ.USER ]]]", req.user);
   const userId = req.user.id || req.user._id;
   User.findById(userId)
+    .populate("awardedPrizes")
     .then(user => {
+      console.log(user.serialize());
       const authToken = createAuthToken(user.serialize());
       res.json({authToken});
     })
