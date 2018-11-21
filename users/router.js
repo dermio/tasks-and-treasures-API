@@ -1,11 +1,13 @@
-  'use strict';
+'use strict';
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const {User} = require('./models');
+const passport = require("passport");
+const jwtAuth = passport.authenticate("jwt", {session: false});
+
+const { User } = require('./models');
 
 const router = express.Router();
-
 const jsonParser = bodyParser.json();
 
 // Post to register a new user
@@ -150,4 +152,17 @@ router.get('/', (req, res) => {
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
 
-module.exports = {router};
+
+/* Route created to get the current Child user info (Child user object).
+Used for the `pollForPrizeStatus` and `notifyParentTasksReadyForReview`
+thunks. The `pollForPrizeStatus` setInterval() needs to be stopped
+when the Child User logs out. Properly clearing the inverval
+prevents errors and crashing. */
+router.get("/currentUser", jwtAuth, (req, res) => {
+  const currentUserId = req.user.id || req.user._id;
+  return User.findById(currentUserId)
+    .then(user => res.json(user.serialize()))
+    .catch(err => res.status(500).json({message: 'Internal server error'}));
+});
+
+module.exports = { router };
