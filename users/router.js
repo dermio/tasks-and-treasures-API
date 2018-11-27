@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const passport = require("passport");
 const jwtAuth = passport.authenticate("jwt", {session: false});
 
-const { User } = require('./models');
+const { User } = require('../models/userModel');
 
 const router = express.Router();
 const jsonParser = bodyParser.json();

@@ -32,7 +32,7 @@ userSchema.methods.serialize = function () {
 
     role: this.role,
     username: this.username,
-    password: this.password, // Should hashed password be returned?
+    //password: this.password, // Should hashed password be returned?
     familyCode: this.familyCode,
 
     // The two fields are optional, not used in the Redux store for now.
