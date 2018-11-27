@@ -156,8 +156,9 @@ router.get('/', (req, res) => {
 /* Route created to get the current Child user info (Child user object).
 Used for the `pollForPrizeStatus` and `notifyParentTasksReadyForReview`
 thunks. The `pollForPrizeStatus` setInterval() needs to be stopped
-when the Child User logs out. Properly clearing the inverval
-prevents errors and crashing. */
+when the Child User logs out.
+Important!: Properly clearing the inverval prevents errors and crashing.
+*/
 router.get("/currentUser", jwtAuth, (req, res) => {
   const currentUserId = req.user.id || req.user._id;
   return User.findById(currentUserId)
