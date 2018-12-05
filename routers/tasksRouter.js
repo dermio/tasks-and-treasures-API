@@ -6,6 +6,7 @@ const jsonParser = bodyParser.json();
 
 const { Task } = require("../models/taskModel");
 const { User } = require("../models/userModel");
+const { Family } = require("../models/familyModel");
 
 
 // Authenticate all CRUD protected endpoints with `jwtAuth` middleware
@@ -15,19 +16,44 @@ const jwtAuth = passport.authenticate("jwt", {session: false});
 
 // GET all tasks, for Parent and Child user with particular family code.
 router.get("/:familyCode", jwtAuth, (req, res) => {
-  Task.find({ familyCode: req.params.familyCode })
-      .populate("completions")
-      .exec()
-      .then((tasks) => {
-        // console.log("[[[ req.user.id ]]]", req.user.id);
-        // console.log("[[[ TASKS ]]]", tasks)
-        return res.json(tasks.map(task => task.serialize(req.user)));
-        // res.json(tasks.map(task => task.taskCompletionsByUser));
-      })
-      .catch(err =>{
-        console.error(err);
-        res.status(500).json({error: "Internal server error"});
-      });
+  Family.findOneAndUpdate(
+    { familyCode: req.params.familyCode },
+    { familyCode: req.params.familyCode },
+    {
+      upsert: true,
+      new: true,
+      setDefaultsOnInsert: true
+    }
+  )
+    .populate({
+      path: "currentTasks",
+      populate: {
+        path: "completions"
+      }
+    })
+    .exec()
+    .then(family => {
+      const tasks = family.currentTasks;
+      return res.json(tasks.map(task => task.serialize(req.user)));
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: "Internal server error" });
+    });
+
+  // Task.find({ familyCode: req.params.familyCode })
+  //   .populate("completions")
+  //   .exec()
+  //   .then(tasks => {
+  //     // console.log("[[[ req.user.id ]]]", req.user.id);
+  //     // console.log("[[[ TASKS ]]]", tasks)
+  //     return res.json(tasks.map(task => task.serialize(req.user)));
+  //     // res.json(tasks.map(task => task.taskCompletionsByUser));
+  //   })
+  //   .catch(err => {
+  //     console.error(err);
+  //     res.status(500).json({ error: "Internal server error" });
+  //   });
 });
 
 // POST task, for Parent User
@@ -44,15 +70,34 @@ router.post("/", jsonParser, jwtAuth, (req, res) => {
     }
   }
 
+  let _task;
   Task.create({
-        taskName: req.body.taskName,
-        familyCode: req.body.familyCode
-      })
-      .then(task => res.status(201).json(task.serialize()))
-      .catch(err => {
-        console.error(err);
-        res.status(500).json({ message: "Internal server error" });
-      });
+    taskName: req.body.taskName,
+    familyCode: req.body.familyCode
+  })
+    .then(task => {
+      const toPush = {
+        $push: {
+          currentTasks: task
+        }
+      };
+      _task = task;
+      const options = {
+        upsert: true,
+        new: true,
+        setDefaultsOnInsert: true
+      };
+      return Family.findOneAndUpdate(
+        { familyCode: req.body.familyCode },
+        toPush,
+        options
+      );
+    })
+    .then(() => res.status(201).json(_task.serialize()))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ message: "Internal server error" });
+    });
 });
 
 // DELETE task, for Parent User
