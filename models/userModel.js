@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
-// Need to require User model or the ref and populate() won't work
+// Need to require Prize model or the ref and populate() won't work
 require("./prizeModel");
 
 const userSchema = mongoose.Schema({

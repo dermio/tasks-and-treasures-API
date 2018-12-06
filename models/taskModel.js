@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 // Need to require User model or the ref and populate() won't work
-const User = require("./userModel");
+require("./userModel");
 
 const taskSchema = mongoose.Schema({
   taskName: {
