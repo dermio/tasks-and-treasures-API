@@ -10,6 +10,7 @@ const { PORT, DATABASE_URL, CLIENT_ORIGIN } = require("./config");
 
 const tasksRouter = require("./routers/tasksRouter");
 const prizesRouter = require("./routers/prizesRouter");
+const familyRouter = require("./routers/familyRouter");
 
 const { router: usersRouter } = require("./users");
 const { router: authRouter, localStrategy, jwtStrategy } = require("./auth");
@@ -34,6 +35,7 @@ app.use("/api/auth/", authRouter);
 
 app.use("/api/tasks", tasksRouter);
 app.use("/api/prizes", prizesRouter);
+app.use("/api/family", familyRouter);
 
 app.get("/api/protected", jwtAuth, (req, res) => {
     res.status(200).json({message: "Access Granted"});
