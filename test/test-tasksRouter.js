@@ -206,3 +206,8 @@ describe("Tasks API resource", function () {
   });
 
 });
+
+
+/* seedTasks function used in the test-familyRouter file.
+Export so I don't have to create mock Tasks for the test-familyRouter. */
+module.exports = { seedTasks };
