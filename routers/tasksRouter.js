@@ -16,6 +16,10 @@ const jwtAuth = passport.authenticate("jwt", {session: false});
 
 // GET all tasks, for Parent and Child user with particular family code.
 router.get("/:familyCode", jwtAuth, (req, res) => {
+  /* Edited GET tasks route by `familyCode` to find Tasks using the
+  Family model. The Family model has fields: `familycode`, `tasksFinalized`,
+  and `currentTasks`. The Family model adds Task documents to the
+  `currentTasks` field, then returns the current tasks for a Family. */
   Family.findOneAndUpdate(
     { familyCode: req.params.familyCode },
     { familyCode: req.params.familyCode },
