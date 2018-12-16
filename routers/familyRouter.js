@@ -9,10 +9,19 @@ const { User } = require("../models/userModel");
 const { Task } = require("../models/taskModel");
 const { Family } = require("../models/familyModel");
 
-router.get("/:familyCode", (req, res) => {
+// Do I need to authenicate?
+const passport = require("passport");
+const jwtAuth = passport.authenticate("jwt", { session: false });
+
+
+// What am I getting by familyCode?
+router.get("/:familyCode", jwtAuth, (req, res) => {
   // STUBBED CODE
 
   // get family
+  res.status(200).json({
+    message: "Access granted: GET /api/family/:familyCode"
+  });
 });
 
 router.put("/:familyCode/finalize", (req, res) => {
