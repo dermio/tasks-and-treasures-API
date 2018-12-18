@@ -19,9 +19,22 @@ router.get("/:familyCode", jwtAuth, (req, res) => {
   // STUBBED CODE
 
   // get family
-  res.status(200).json({
-    message: "Access granted: GET /api/family/:familyCode"
-  });
+
+  // res.status(200).json({
+  //   message: "Access granted: GET /api/family/:familyCode"
+  // });
+
+  Family.findOne({ familyCode: req.params.familyCode })
+    .then(family => {
+      res.status(200).json({
+        message: "Access granted: GET /api/family/:familyCode",
+        family
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: "Something went horribly awry" });
+    });
 });
 
 router.put("/:familyCode/finalize", jwtAuth, (req, res) => {
