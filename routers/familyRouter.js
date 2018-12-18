@@ -69,10 +69,33 @@ router.put("/:familyCode/finalize", jwtAuth, (req, res) => {
     });
 });
 
-router.put(":/familyCode/reset", (req, res) => {
+router.put("/:familyCode/reset", jwtAuth, (req, res) => {
   // STUBBED CODE
 
   // handle reset
+
+  console.log("[[[ /:familyCode/reset ]]]");
+
+  let toUpdate = { tasksFinalized: false };
+  Family//.findOne({ familyCode: req.params.familyCode })
+  // .findById(req.user.id) // This doesn't work!!
+  .findOneAndUpdate(
+    { familyCode: req.params.familyCode },
+    { $set: toUpdate }
+  )
+  .then(family => {
+    // eventually delete this response
+    res.status(200).send({
+      message: "Access granted: PUT /api/family/:familyCode/reset",
+      family
+    });
+
+    // res.status(204).end(); // Use this response
+  })
+  .catch(err => {
+    console.error(err);
+    res.status(500).json({ error: "Something went horribly awry" });
+  });
 });
 
 module.exports = router;
