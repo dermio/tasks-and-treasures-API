@@ -24,8 +24,8 @@ router.get("/:familyCode", jwtAuth, (req, res) => {
   });
 });
 
-router.put("/:familyCode/finalize", (req, res) => {
-  res.status(204).end(); // temp to make test-familyRouter pass
+router.put("/:familyCode/finalize", jwtAuth, (req, res) => {
+  // res.status(204).end(); // temp to make test-familyRouter pass
 
   // STUBBED CODE
 
@@ -35,6 +35,25 @@ router.put("/:familyCode/finalize", (req, res) => {
   // family model's tasksFinalized property set to true
 
   // ELSEWHERE you will need to enforce this behavior. (ie frontend)
+
+  console.log("[[[ /:familyCode/finalize ]]]");
+
+  let toUpdate = { tasksFinalized: true };
+  Family//.findOne({ familyCode: req.params.familyCode })
+    // .findById(req.user.id) // This doesn't work!!
+    .findOneAndUpdate(
+      { familyCode: req.params.familyCode },
+      { $set: toUpdate }
+    )
+    .then(family => {
+      // eventually delete this response
+      res.status(200).send({
+        message: "Access granted: PUT /api/family/:familyCode/finalize",
+        family
+      });
+
+      // res.status(204).end(); // Use this response
+    });
 });
 
 router.put(":/familyCode/reset", (req, res) => {
