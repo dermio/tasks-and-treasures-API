@@ -14,7 +14,8 @@ const passport = require("passport");
 const jwtAuth = passport.authenticate("jwt", { session: false });
 
 
-// What am I getting by familyCode?
+/* Q. Why am I getting by familyCode?
+A. When admin client page loads, want to get family. */
 router.get("/:familyCode", jwtAuth, (req, res) => {
   // STUBBED CODE
 
@@ -56,7 +57,8 @@ router.put("/:familyCode/finalize", jwtAuth, (req, res) => {
     // .findById(req.user.id) // This doesn't work!!
     .findOneAndUpdate(
       { familyCode: req.params.familyCode },
-      { $set: toUpdate }
+      { $set: toUpdate },
+      { new: true } // return the modified document rather than the original
     )
     .then(family => {
       // eventually delete this response
@@ -81,7 +83,8 @@ router.put("/:familyCode/reset", jwtAuth, (req, res) => {
   // .findById(req.user.id) // This doesn't work!!
   .findOneAndUpdate(
     { familyCode: req.params.familyCode },
-    { $set: toUpdate }
+    { $set: toUpdate },
+    { new: true } // return the modified document rather than the original
   )
   .then(family => {
     // eventually delete this response
