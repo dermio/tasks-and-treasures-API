@@ -78,7 +78,10 @@ router.put("/:familyCode/reset", jwtAuth, (req, res) => {
 
   console.log("[[[ /:familyCode/reset ]]]");
 
-  let toUpdate = { tasksFinalized: false };
+  let toUpdate = {
+    tasksFinalized: false,
+    currentTasks: []
+  };
   Family//.findOne({ familyCode: req.params.familyCode })
   // .findById(req.user.id) // This doesn't work!!
   .findOneAndUpdate(
