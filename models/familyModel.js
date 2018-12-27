@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 require("./taskModel");
+require("./prizeModel");
 
 const familySchema = mongoose.Schema({
   familyCode: {
@@ -15,7 +16,12 @@ const familySchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     default: null,
     ref: "Task"
-  }]
+  }],
+  currentPrize: {
+    type: mongoose.Schema.Types.ObjectId,
+    default: null,
+    ref: "Prize"
+  }
 });
 
 const Family = mongoose.model("Family", familySchema);
