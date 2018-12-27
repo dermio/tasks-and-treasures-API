@@ -6,6 +6,7 @@ const jsonParser = bodyParser.json();
 
 const { Prize } = require("../models/prizeModel");
 const { User } = require("../models/userModel");
+const { Family } = require("../models/familyModel");
 
 
 // Authenticate all CRUD protected endpoints with `jwtAuth` middleware
@@ -15,24 +16,29 @@ const jwtAuth = passport.authenticate("jwt", {session: false});
 
 // GET prize (prizes), for Parent and Child User with particular family code.
 router.get("/:familyCode", jwtAuth, (req, res) => {
-  Prize.find({ familyCode: req.params.familyCode })
-       .then((prizes) => {
-         res.json(prizes.map(prize => prize.serialize()));
-         /* either or
-         res.json({
-           prizes: prizes.map(prize => prize.serialize())
-         });
-         */
-       })
-       .catch(err =>{
-         console.error(err);
-         res.status(500).json({error: "Internal server error"});
-       });
+  Family.findOne({ familyCode: req.params.familyCode })
+    .populate("currentPrize")
+    .exec()
+    .then(family => {
+      /* Family prize might not exist, or prize may have been deleted.
+      Need conditional for JSON response, to respond with prize or null. */
+      const toRespond = family.currentPrize
+        ? family.currentPrize.serialize() : null;
+      res.json(toRespond);
+    })
+    .catch(err =>{
+      console.error(err);
+      res.status(500).json({ error: "Internal server error" });
+    });
 });
 
 // POST prize, for Parent User
 router.post("/", jsonParser, jwtAuth, (req, res) => {
-  //console.log(req.body);
+  /* Need to find the family with the familyCode req.body.familyCode,
+  then see if `tasksFinalized` is true. If it is true,
+  you need to respond with an error status code and a message.
+  Otherwise, do what you're doing. */
+
   let requiredFields = ["prizeName", "familyCode"];
 
   for (let i = 0; i < requiredFields.length; i++) {
@@ -44,20 +50,29 @@ router.post("/", jsonParser, jwtAuth, (req, res) => {
     }
   }
 
-  Prize.deleteMany({
+  let currentPrize;
+  Prize.create({
+    prizeName: req.body.prizeName,
     familyCode: req.body.familyCode
   })
-  .then(() =>
-    Prize.create({
-      prizeName: req.body.prizeName,
-      familyCode: req.body.familyCode
+    .then(prize => {
+      currentPrize = prize;
+      const toUpdate = {
+        familyCode: req.body.familyCode,
+        currentPrize: prize
+      };
+
+      return Family.findOneAndUpdate(
+        { familyCode: req.body.familyCode },
+        { $set: toUpdate },
+        { new: true, upsert: true, }
+      )
     })
-    .then(prize => res.status(201).json(prize.serialize()))
+    .then(family => res.status(201).json(currentPrize.serialize()))
     .catch(err => {
       console.error(err);
       res.status(500).json({ message: "Internal server error" });
-    })
-  );
+    });
 });
 
 // DELETE prize, for Parent User
