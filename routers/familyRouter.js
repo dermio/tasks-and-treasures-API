@@ -52,14 +52,26 @@ router.put("/:familyCode/finalize", jwtAuth, (req, res) => {
 
   console.log("[[[ /:familyCode/finalize ]]]");
 
-  let toUpdate = { tasksFinalized: true };
-  Family//.findOne({ familyCode: req.params.familyCode })
-    // .findById(req.user.id) // This doesn't work!!
+  Family
     .findOneAndUpdate(
       { familyCode: req.params.familyCode },
-      { $set: toUpdate },
-      { new: true } // return the modified document rather than the original
+      {
+        $set: {
+          familyCode: req.params.familyCode
+        }
+      },
+      { new: true, upsert: true } // return the modified document rather than the original
     )
+    /* Before finalizing Tasks list, check if the Family `tasksFinalized`
+    key is already True. If finalized, send error. Otherwise continue. */
+    .then(family => {
+      if (!family.tasksFinalized) {
+        family.tasksFinalized = true;
+        return family.save();
+      } else {
+        return res.json(500, { message: "TasksFinalized is already True." });
+      }
+    })
     .then(family => {
       // eventually delete this response
       res.status(200).send({
@@ -68,7 +80,8 @@ router.put("/:familyCode/finalize", jwtAuth, (req, res) => {
       });
 
       // res.status(204).end(); // Use this response
-    });
+    })
+    .catch(err => res.json({ err: "There was an error" + err} ));
 });
 
 router.put("/:familyCode/reset", jwtAuth, (req, res) => {
