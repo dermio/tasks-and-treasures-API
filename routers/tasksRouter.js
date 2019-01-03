@@ -74,34 +74,51 @@ router.post("/", jsonParser, jwtAuth, (req, res) => {
     }
   }
 
-  let _task;
-  Task.create({
-    taskName: req.body.taskName,
-    familyCode: req.body.familyCode
-  })
-    .then(task => {
-      const toPush = {
-        $push: {
-          currentTasks: task
-        }
-      };
-      _task = task;
-      const options = {
-        upsert: true,
-        new: true,
-        setDefaultsOnInsert: true
-      };
-      return Family.findOneAndUpdate(
-        { familyCode: req.body.familyCode },
-        toPush,
-        options
-      );
+  // Before Creating Task, make sure Family.taskFinalized is not TRUE (false)
+  return Family.findOneAndUpdate(
+    { familyCode: req.body.familyCode },
+    {
+      $set: {
+        familyCode: req.body.familyCode
+      }
+    },
+    { new: true, upsert: true } // return the modified document rather than the original
+  )
+    .then(family => {
+      if (family.tasksFinalized) {
+        return res.json(500, { message: "TasksFinalized is already True." })
+      }
     })
-    .then(() => res.status(201).json(_task.serialize()))
-    .catch(err => {
-      console.error(err);
-      res.status(500).json({ message: "Internal server error" });
-    });
+    .then(() => {
+      let _task;
+      return Task.create({
+        taskName: req.body.taskName,
+        familyCode: req.body.familyCode
+      })
+        .then(task => {
+          const toPush = {
+            $push: {
+              currentTasks: task
+            }
+          };
+          _task = task;
+          const options = {
+            upsert: true,
+            new: true,
+            setDefaultsOnInsert: true
+          };
+          return Family.findOneAndUpdate(
+            { familyCode: req.body.familyCode },
+            toPush,
+            options
+          );
+        })
+        .then(() => res.status(201).json(_task.serialize()))
+        .catch(err => {
+          console.error(err);
+          res.status(500).json({ message: "Internal server error" });
+        });
+    })
 });
 
 // DELETE task, for Parent User
@@ -137,6 +154,8 @@ router.put("/:id", jsonParser, jwtAuth, (req, res) => {
       toUpdate[field] = req.body[field];
     }
   });
+
+  // Before Updating TASK, make sure Family.taskFinalized is not TRUE (false)
 
   Task
     /* all key/value pairs in toUpdate will be updated
