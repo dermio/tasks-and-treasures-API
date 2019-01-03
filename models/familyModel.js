@@ -5,7 +5,8 @@ require("./prizeModel");
 const familySchema = mongoose.Schema({
   familyCode: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   tasksFinalized: {
     type: Boolean,
