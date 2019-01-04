@@ -86,7 +86,8 @@ router.post("/", jsonParser, jwtAuth, (req, res) => {
   )
     .then(family => {
       if (family.tasksFinalized) {
-        return res.json(500, { message: "TasksFinalized is already True." })
+        return res.status(500)
+          .json({ message: "POST Task, tasksFinalized is already True." })
       }
     })
     .then(() => {
