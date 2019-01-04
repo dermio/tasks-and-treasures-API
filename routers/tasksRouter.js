@@ -158,15 +158,38 @@ router.put("/:id", jsonParser, jwtAuth, (req, res) => {
 
   // Before Updating TASK, make sure Family.taskFinalized is not TRUE (false)
 
-  Task
-    /* all key/value pairs in toUpdate will be updated
-    -- that's what `$set` does */
-    .findByIdAndUpdate(req.params.id, {$set: toUpdate})
-    .then(task => {
-      // console.log(task); // the document with updated fields
-      res.status(204).end();
+  /* The jwtAuth middleware contains info for req.user.
+  It's unnecessary to pass user info for the PUT request. */
+  console.log("[[[ REQ.USER.FAMILYCODE ]]]", req.user.familyCode);
+
+  Family.findOneAndUpdate(
+    { familyCode: req.user.familyCode },
+    {
+      $set: { familyCode: req.user.familyCode }
+    },
+    { new: true, upsert: true }
+  )
+    .then(family => {
+      if (family.tasksFinalized) {
+        return res.status(500)
+          .json({ message: "PUT Task, tasksFinalized is already True" });
+      }
     })
-    .catch(err => res.status(500).json( {message: "Internal server error"} ));
+    .then(() => {
+      Task
+      /* all key/value pairs in toUpdate will be updated
+      -- that's what `$set` does */
+        .findByIdAndUpdate(req.params.id, { $set: toUpdate })
+        .then(task => {
+          // console.log(task); // the document with updated fields
+          res.status(204).end();
+        })
+        .catch(err => {
+          return res.status(500)
+            .json({ message: "Internal server error" });
+        });
+    });
+
 });
 
 
