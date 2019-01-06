@@ -124,14 +124,34 @@ router.post("/", jsonParser, jwtAuth, (req, res) => {
 
 // DELETE task, for Parent User
 router.delete("/:id", jwtAuth, (req, res) => {
-  Task.findByIdAndRemove(req.params.id)
-      .then(() => {
-        console.log(`Deleted task with id \`${req.params.id}\``);
-        res.status(204).end();
-      })
-      .catch(err => {
-        res.status(500).json({message: "Internal server error"});
-      });
+  // Before Deleting Task, make sure Family.taskFinalized is not TRUE (false)
+  Family.findOneAndUpdate(
+    { familyCode: req.user.familyCode },
+    {
+      $set: { familyCode: req.user.familyCode }
+    },
+    { new: true, upsert: true }
+  )
+    .then(family => {
+      if (family.tasksFinalized) {
+        return res.status(500)
+          .json({ message: "DELETE Task, tasksFinalized is already True" });
+      }
+    })
+    .catch(err => {
+      console.log("[[[ ERROR ]]]", err)
+    })
+    .then(() => {
+      Task.findByIdAndRemove(req.params.id)
+        .then(() => {
+          console.log(`Deleted task with id \`${req.params.id}\``);
+          res.status(204).end();
+        })
+        .catch(err => {
+          res.status(500).json({ message: "Internal server error" });
+        });
+    });
+
 });
 
 // PUT task, for Parent User
