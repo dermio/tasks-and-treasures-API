@@ -74,7 +74,7 @@ router.post("/", jsonParser, jwtAuth, (req, res) => {
     }
   }
 
-  // Before Creating Task, make sure Family.taskFinalized is not TRUE (false)
+  // Before Creating Task, make sure Family.tasksFinalized is not TRUE (false)
   return Family.findOneAndUpdate(
     { familyCode: req.body.familyCode },
     {
@@ -124,7 +124,7 @@ router.post("/", jsonParser, jwtAuth, (req, res) => {
 
 // DELETE task, for Parent User
 router.delete("/:id", jwtAuth, (req, res) => {
-  // Before Deleting Task, make sure Family.taskFinalized is not TRUE (false)
+  // Before Deleting Task, make sure Family.tasksFinalized is not TRUE (false)
   Family.findOneAndUpdate(
     { familyCode: req.user.familyCode },
     {
@@ -176,7 +176,7 @@ router.put("/:id", jsonParser, jwtAuth, (req, res) => {
     }
   });
 
-  // Before Updating TASK, make sure Family.taskFinalized is not TRUE (false)
+  // Before Updating TASK, make sure Family.tasksFinalized is not TRUE (false)
 
   /* The jwtAuth middleware contains info for req.user.
   It's unnecessary to pass user info for the PUT request. */
