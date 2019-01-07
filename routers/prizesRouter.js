@@ -173,15 +173,44 @@ router.put("/:id", jsonParser, jwtAuth, (req, res) => {
     }
   });
 
-  Prize
-    /* all key/value pairs in toUpdate will be updated
-    -- that's what `$set` does */
-    .findByIdAndUpdate(req.params.id, {$set: toUpdate})
-    .then(prize => {
-      // console.log(prize); // the document with updated fields
-      res.status(204).end();
+
+  // Before Updating Prize, make sure Family.tasksFinalized is not TRUE (false)
+  /* NOTE: The PUT req to the `/api/prizes` URL might not be made or needed
+  based on the `createOrUpdatePrize` thunk on the Client side.
+  The thunk makes a POST fetch request to `/api/prizes`. */
+
+  /* The jwtAuth middleware contains info for req.user.
+  It's unnecessary to pass user info for the PUT request. */
+  console.log("[[[ REQ.USER.FAMILYCODE ]]]", req.user.familyCode);
+
+  Family.findOneAndUpdate(
+    { familyCode: req.user.familyCode },
+    {
+      $set: { familyCode: req.user.familyCode }
+    },
+    { new: true, upsert: true }
+  )
+    .then(family => {
+      if (family.tasksFinalized) {
+        return res.status(500)
+          .json({ message: "PUT Prize, tasksFinalized is already True." });
+      }
     })
-    .catch(err => res.status(500).json( {message: "Internal server error"} ));
+    .then(() => {
+      Prize
+      /* all key/value pairs in toUpdate will be updated
+      -- that's what `$set` does */
+      .findByIdAndUpdate(req.params.id, {$set: toUpdate})
+      .then(prize => {
+        // console.log(prize); // the document with updated fields
+        res.status(204).end();
+      })
+      .catch(err => {
+        return res.status(500)
+          .json({ message: "Internal server error" });
+      });
+    });
+
 });
 
 module.exports = router;
