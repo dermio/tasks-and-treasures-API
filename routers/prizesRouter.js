@@ -50,29 +50,46 @@ router.post("/", jsonParser, jwtAuth, (req, res) => {
     }
   }
 
-  let currentPrize;
-  Prize.create({
-    prizeName: req.body.prizeName,
-    familyCode: req.body.familyCode
-  })
-    .then(prize => {
-      currentPrize = prize;
-      const toUpdate = {
-        familyCode: req.body.familyCode,
-        currentPrize: prize
-      };
-
-      return Family.findOneAndUpdate(
-        { familyCode: req.body.familyCode },
-        { $set: toUpdate },
-        { new: true, upsert: true, }
-      )
+  // Before Creating Prize, make sure Family.tasksFinalized is not TRUE (false)
+  Family.findOneAndUpdate(
+    { familyCode: req.body.familyCode },
+    {
+      $set: { familyCode: req.body.familyCode }
+    },
+    { new: true, upsert: true }
+  )
+    .then(family => {
+      if (family.tasksFinalized) {
+        return res.status(500)
+          .json({ message: "POST Prize, tasksFinalized is already True." });
+      }
     })
-    .then(family => res.status(201).json(currentPrize.serialize()))
-    .catch(err => {
-      console.error(err);
-      res.status(500).json({ message: "Internal server error" });
+    .then(() => {
+      let currentPrize;
+      Prize.create({
+        prizeName: req.body.prizeName,
+        familyCode: req.body.familyCode
+      })
+        .then(prize => {
+          currentPrize = prize;
+          const toUpdate = {
+            familyCode: req.body.familyCode,
+            currentPrize: prize
+          };
+
+          return Family.findOneAndUpdate(
+            { familyCode: req.body.familyCode },
+            { $set: toUpdate },
+            { new: true, upsert: true, }
+          );
+        })
+        .then(family => res.status(201).json(currentPrize.serialize()))
+        .catch(err => {
+          console.error(err);
+          res.status(500).json({ message: "Internal server error" });
+        });
     });
+
 });
 
 // DELETE prize, for Parent User
