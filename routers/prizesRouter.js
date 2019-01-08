@@ -51,7 +51,7 @@ router.post("/", jsonParser, jwtAuth, (req, res) => {
   }
 
   // Before Creating Prize, make sure Family.tasksFinalized is not TRUE (false)
-  Family.findOneAndUpdate(
+  return Family.findOneAndUpdate(
     { familyCode: req.body.familyCode },
     {
       $set: { familyCode: req.body.familyCode }
@@ -63,10 +63,9 @@ router.post("/", jsonParser, jwtAuth, (req, res) => {
         return res.status(500)
           .json({ message: "POST Prize, tasksFinalized is already True." });
       }
-    })
-    .then(() => {
+
       let currentPrize;
-      Prize.create({
+      return Prize.create({
         prizeName: req.body.prizeName,
         familyCode: req.body.familyCode
       })
@@ -86,7 +85,7 @@ router.post("/", jsonParser, jwtAuth, (req, res) => {
         .then(family => res.status(201).json(currentPrize.serialize()))
         .catch(err => {
           console.error(err);
-          res.status(500).json({ message: "Internal server error" });
+          return res.status(500).json({ message: "Internal server error" });
         });
     });
 
@@ -95,7 +94,7 @@ router.post("/", jsonParser, jwtAuth, (req, res) => {
 // DELETE prize, for Parent User
 router.delete("/:id", jwtAuth, (req, res) => {
   // Before Deleting Prize, make sure Family.tasksFinalized is not TRUE (false)
-  Family.findOneAndUpdate(
+  return Family.findOneAndUpdate(
     { familyCode: req.user.familyCode },
     {
       $set: { familyCode: req.user.familyCode }
@@ -107,15 +106,14 @@ router.delete("/:id", jwtAuth, (req, res) => {
         return res.status(500)
           .json({ message: "DELETE Prize, tasksFinalized is already True" });
       }
-    })
-    .then(() => {
-      Prize.findByIdAndRemove(req.params.id)
+
+      return Prize.findByIdAndRemove(req.params.id)
         .then(() => {
           console.log(`Deleted prize with id \`${req.params.id}\``);
-          res.status(204).end();
+          return res.status(204).end();
         })
         .catch(err => {
-          res.status(500).json({message: "Internal server error"});
+          return res.status(500).json({message: "Internal server error"});
         });
     });
 
@@ -136,7 +134,7 @@ router.put("/current/award", jsonParser, jwtAuth, (req, res) => {
 
   let childUserId = req.body.child._id;
 
-  Prize.findOne({ familyCode: req.user.familyCode })
+  return Prize.findOne({ familyCode: req.user.familyCode })
     // .findByIdAndUpdate(req.params.id, {$set: toUpdate})
     .then(prize => {
       let toUpdate = {
@@ -146,9 +144,7 @@ router.put("/current/award", jsonParser, jwtAuth, (req, res) => {
       };
       return User.findByIdAndUpdate(childUserId, toUpdate);
     })
-    .then(() => {
-      res.status(204).end();
-    })
+    .then(() => res.status(204).end())
     .catch(err => res.status(500).json( {message: "Internal server error"} ));
 });
 
@@ -156,15 +152,13 @@ router.put("/current/reject", jsonParser, jwtAuth, (req, res) => {
   if (!(req.body.child && req.body.child._id)) {
     let message = "Request user not provided";
     console.error(message);
-    res.status(400).json( {message: message} );
+    return res.status(400).json( {message: message} );
   }
 
   let childUserId = req.body.child._id;
 
   User.findByIdAndUpdate(childUserId, {tasksReadyForReview: false})
-    .then(() => {
-      res.status(204).end();
-    })
+    .then(() => res.status(204).end())
     .catch(err => res.status(500).json( {message: "Internal server error"} ));
 });
 
@@ -200,7 +194,7 @@ router.put("/:id", jsonParser, jwtAuth, (req, res) => {
   It's unnecessary to pass user info for the PUT request. */
   console.log("[[[ REQ.USER.FAMILYCODE ]]]", req.user.familyCode);
 
-  Family.findOneAndUpdate(
+  return Family.findOneAndUpdate(
     { familyCode: req.user.familyCode },
     {
       $set: { familyCode: req.user.familyCode }
@@ -212,16 +206,12 @@ router.put("/:id", jsonParser, jwtAuth, (req, res) => {
         return res.status(500)
           .json({ message: "PUT Prize, tasksFinalized is already True." });
       }
-    })
-    .then(() => {
-      Prize
+
+      return Prize
       /* all key/value pairs in toUpdate will be updated
       -- that's what `$set` does */
       .findByIdAndUpdate(req.params.id, {$set: toUpdate})
-      .then(prize => {
-        // console.log(prize); // the document with updated fields
-        res.status(204).end();
-      })
+      .then(prize => res.status(204).end())
       .catch(err => {
         return res.status(500)
           .json({ message: "Internal server error" });

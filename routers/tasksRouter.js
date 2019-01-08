@@ -179,7 +179,7 @@ router.put("/:id", jsonParser, jwtAuth, (req, res) => {
   It's unnecessary to pass user info for the PUT request. */
   console.log("[[[ REQ.USER.FAMILYCODE ]]]", req.user.familyCode);
 
-  Family.findOneAndUpdate(
+  return Family.findOneAndUpdate(
     { familyCode: req.user.familyCode },
     {
       $set: { familyCode: req.user.familyCode }
@@ -188,24 +188,23 @@ router.put("/:id", jsonParser, jwtAuth, (req, res) => {
   )
     .then(family => {
       if (family.tasksFinalized) {
-        return res.status(500)
-          .json({ message: "PUT Task, tasksFinalized is already True" });
+        var response = res.status(500).json({ message: "PUT Task, tasksFinalized is already True" }); // this is where the response actually gets sent.
+        return response; // this returns a value for the promise (Resolves) and exits the current function
       }
-    })
-    .then(() => {
-      Task
+
+      return Task
       /* all key/value pairs in toUpdate will be updated
       -- that's what `$set` does */
         .findByIdAndUpdate(req.params.id, { $set: toUpdate })
         .then(task => {
           // console.log(task); // the document with updated fields
-          res.status(204).end();
+          return res.status(204).end();
         })
         .catch(err => {
           return res.status(500)
             .json({ message: "Internal server error" });
         });
-    });
+    })
 
 });
 
