@@ -138,9 +138,6 @@ router.delete("/:id", jwtAuth, (req, res) => {
           .json({ message: "DELETE Task, tasksFinalized is already True" });
       }
     })
-    .catch(err => {
-      console.log("[[[ ERROR ]]]", err)
-    })
     .then(() => {
       Task.findByIdAndRemove(req.params.id)
         .then(() => {
