@@ -103,7 +103,7 @@ router.delete("/:id", jwtAuth, (req, res) => {
     { new: true, upsert: true }
   )
     .then(family => {
-      if (family.familyCode) {
+      if (family.tasksFinalized) {
         return res.status(500)
           .json({ message: "DELETE Prize, tasksFinalized is already True" });
       }
