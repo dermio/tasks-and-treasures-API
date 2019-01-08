@@ -137,16 +137,15 @@ router.delete("/:id", jwtAuth, (req, res) => {
         return res.status(500)
           .json({ message: "DELETE Task, tasksFinalized is already True" });
       }
-    })
-    .then(() => {
-      Task.findByIdAndRemove(req.params.id)
-        .then(() => {
-          console.log(`Deleted task with id \`${req.params.id}\``);
-          res.status(204).end();
-        })
-        .catch(err => {
-          res.status(500).json({ message: "Internal server error" });
-        });
+
+      return Task.findByIdAndRemove(req.params.id)
+      .then(() => {
+        console.log(`Deleted task with id \`${req.params.id}\``);
+        return res.status(204).end();
+      })
+      .catch(err => {
+        return res.status(500).json({ message: "Internal server error" });
+      });
     });
 
 });
@@ -234,10 +233,10 @@ router.put("/:id/completed", jsonParser, jwtAuth, (req, res) => {
       }
     };
 
-    Task.findByIdAndUpdate(req.params.id, toPush)
+    return Task.findByIdAndUpdate(req.params.id, toPush)
       .then(task => {
         console.log("[[[ TASK UPDATE, ADD CHECK TO BOX ]]]", task);
-        res.status(204).end()
+        return res.status(204).end()
       })
       .catch(err => res.status(500).json({ message: "Internal server error" }));
   }
@@ -250,10 +249,10 @@ router.put("/:id/completed", jsonParser, jwtAuth, (req, res) => {
       }
     };
 
-    Task.findByIdAndUpdate(req.params.id, toPull)
+    return Task.findByIdAndUpdate(req.params.id, toPull)
       .then(task => {
         console.log("[[[ TASK UPDATE, REMOVE CHECK TO BOX ]]]", task)
-        res.status(204).end()
+        return res.status(204).end();
       })
       .catch(err => res.status(500).json({ message: "Internal server error" }));
   }
@@ -272,7 +271,7 @@ router.put("/request/review", jwtAuth, (req, res) => {
   /* Although this is a PUT request to the Tasks route that shows the
   Child user finished all tasks, we need to use the User model to find
   which Child user finished the tasks. */
-  User.findByIdAndUpdate(req.user.id, { $set: toUpdate })
+  return User.findByIdAndUpdate(req.user.id, { $set: toUpdate })
     .then(() => res.status(204).end())
     .catch(err => res.status(500).json({ message: "Internal server error" }));
 });
