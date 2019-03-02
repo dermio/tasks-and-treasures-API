@@ -87,11 +87,15 @@ router.put("/:familyCode/finalize", jwtAuth, (req, res) => {
 router.put("/:familyCode/reset", jwtAuth, (req, res) => {
   console.log("[[[ /:familyCode/reset ]]]");
 
+  /* In the Family document, these three field values are Reset.
+  This affects all Child users for a given Family. */
   let toUpdate = {
     tasksFinalized: false,
     currentTasks: [],
     currentPrize: null
   };
+
+  let _family;
 
   Family//.findOne({ familyCode: req.params.familyCode })
     // .findById(req.user.id) // This doesn't work!!
@@ -101,11 +105,24 @@ router.put("/:familyCode/reset", jwtAuth, (req, res) => {
       { new: true } // return the modified document rather than the original
     )
     .then(family => {
-      // eventually delete this response
-      res.status(200).send({
-        message: "Access granted: PUT /api/family/:familyCode/reset",
-        family
-      });
+      _family = family;
+
+      /* In addition to resetting the three field values in the Family
+      document, the individual Child user's `tasksReadyForReview`
+      field is reset to False. */
+      return User.update(
+        {
+          familyCode: req.params.familyCode,
+          role: "child"
+        },
+        { $set: { tasksReadyForReview: false } }
+      )})
+      .then(() => {
+        // eventually delete this response
+        res.status(200).send({
+          message: "Access granted: PUT /api/family/:familyCode/reset",
+          family: _family
+        });
 
       // res.status(204).end(); // Use this response
     })
