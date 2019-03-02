@@ -162,7 +162,11 @@ Important!: Properly clearing the inverval prevents errors and crashing.
 router.get("/currentUser", jwtAuth, (req, res) => {
   const currentUserId = req.user.id || req.user._id;
   return User.findById(currentUserId)
-    .then(user => res.json(user.serialize()))
+    .populate("awardedPrizes")
+    .then(user => {
+      res.json(user.serialize())
+      console.log(user);
+    })
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
 
