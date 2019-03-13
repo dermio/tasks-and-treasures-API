@@ -135,11 +135,16 @@ router.put("/current/award", jsonParser, jwtAuth, (req, res) => {
   let childUserId = req.body.child._id;
 
   return Family.findOne({ familyCode: req.user.familyCode })
+    /* Find the family document by familyCode. Next populate the `curentPrize`
+    field of the document using the Prize model. Then return the populated
+    family document. Using the currentPrize from the family, update
+    the single Child user's `awardedPrizes` array with the Id of the
+    currentPrize from the family. */
     .populate("currentPrize")
-    .then(prize => {
+    .then(family => {
       let toUpdate = {
         $push: { // Add the prize onto array, to Child user doc
-          awardedPrizes: prize
+          awardedPrizes: family.currentPrize._id
         }
       };
       return User.findByIdAndUpdate(childUserId, toUpdate);
