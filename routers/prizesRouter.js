@@ -24,6 +24,8 @@ router.get("/:familyCode", jwtAuth, (req, res) => {
       Need conditional for JSON response, to respond with prize or null. */
       const toRespond = family.currentPrize
         ? family.currentPrize.serialize() : null;
+
+      console.log("FAMILY route", family)
       res.json(toRespond);
     })
     .catch(err =>{
@@ -197,7 +199,7 @@ router.put("/:id", jsonParser, jwtAuth, (req, res) => {
 
   /* The jwtAuth middleware contains info for req.user.
   It's unnecessary to pass user info for the PUT request. */
-  console.log("[[[ REQ.USER.FAMILYCODE ]]]", req.user.familyCode);
+  console.log("[[[ REQ.USER.FAMILYCODE prizes route ]]]", req.user.familyCode);
 
   return Family.findOneAndUpdate(
     { familyCode: req.user.familyCode },
