@@ -348,7 +348,7 @@ describe('/api/user', function() {
               // 'username',
               // 'firstName',
               // 'lastName'
-              'username', 'password', 'role',
+              'username', 'awardedPrizes', 'role',
               'familyCode', 'id', 'completedTasks'
               // ??? why include 'id' and 'completedTasks' ???
             );
@@ -412,11 +412,11 @@ describe('/api/user', function() {
             // });
 
             expect(res.body[0]).to.have.keys(
-              'username', 'password', 'role',
+              'username', 'awardedPrizes', 'role',
               'familyCode', 'id', 'completedTasks'
             );
             expect(res.body[1]).to.have.keys(
-              'username', 'password', 'role',
+              'username', 'awardedPrizes', 'role',
               'familyCode', 'id', 'completedTasks'
             );
 
