@@ -34,6 +34,7 @@ describe('Auth endpoints', function () {
   const familyCode = "smith123";
   // const firstName = 'Example';
   // const lastName = 'User';
+  let createdUser;
 
   before(function () {
     return runServer(TEST_DATABASE_URL);
@@ -53,7 +54,9 @@ describe('Auth endpoints', function () {
         // firstName,
         // lastName
       })
-    );
+    ).then(user => {
+      createdUser = user;
+    });
   });
 
   afterEach(function () {
@@ -186,7 +189,8 @@ describe('Auth endpoints', function () {
           user: {
             username,
             role,
-            familyCode
+            familyCode,
+            id: createdUser.id
           },
           exp: Math.floor(Date.now() / 1000) - 10 // Expired ten seconds ago
         },
@@ -219,7 +223,8 @@ describe('Auth endpoints', function () {
           user: {
             username,
             role,
-            familyCode
+            familyCode,
+            id: createdUser.id
           }
         },
         JWT_SECRET,
@@ -246,7 +251,10 @@ describe('Auth endpoints', function () {
           expect(payload.user).to.deep.equal({
             username,
             role,
-            familyCode
+            familyCode,
+            awardedPrizes: [],
+            completedTasks: [],
+            id: createdUser.id
           });
           expect(payload.exp).to.be.at.least(decoded.exp);
         });
