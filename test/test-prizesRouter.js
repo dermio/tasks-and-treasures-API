@@ -7,6 +7,8 @@ const { app, runServer, closeServer } = require("../server");
 const { Prize } = require("../models/prizeModel");
 const { TEST_DATABASE_URL } = require("../config");
 
+const { Family } = require("../models/familyModel");
+
 const should = chai.should();
 chai.use(chaiHttp);
 
@@ -46,12 +48,13 @@ function generatePrizeData() {
   };
 }
 
-describe("Prizes API resource", function () {
+describe.only("Prizes API resource", function () {
   const username = "exampleUser";
   const password = "examplePass";
   const role = "Example";
   const familyCode = "schwarzeneggerT800";
 
+  let currentUser;
 
   // we need each of these hook functions to return a promise
   // otherwise we'd need to call a `done` callback. `runServer`,
@@ -71,7 +74,62 @@ describe("Prizes API resource", function () {
         familyCode
       })
     )
-    .then(seedPrizes);
+    .then(user => {
+      currentUser = user;
+      return user;
+    })
+    .then(seedPrizes)
+    .then(prizes => {
+      let prize = prizes;
+      console.log("[[[ PRIZE, beforeEach() ]]]", prize);
+
+      /* The prize document was successfully created by calling seedPrizes
+      in the prior then() method.
+
+      {
+        _id: 5cad114369ede7146497e106,
+        prizeName: 'Computer',
+        familyCode: 'schwarzeneggerT800',
+        __v: 0
+      }
+      */
+
+
+      return Family.findOneAndUpdate(
+        { familyCode },
+        {
+          $set: {
+            familyCode,
+            prize
+          }
+        },
+        {
+          upsert: true,
+          new: true,
+          setDefaultsOnInsert: true
+        }
+      )
+    })
+
+    /* Extra code */
+    .then(family => { // extra console.log
+      console.log("[[[ The Family with the Prize]]]", family);
+
+      /* The returned Family does NOT have the `currentPrize` field populated.
+      Why does the currentPrize field remain null, despite the prize
+      creation in the prior then() method?
+
+      {
+        tasksFinalized: false,
+        currentTasks: [],
+        currentPrize: null,
+        _id: 5cad114469ede7146497e10a,
+        familyCode: 'schwarzeneggerT800',
+        __v: 0
+      }
+      */
+
+    });
   });
 
   afterEach(function () {
@@ -108,6 +166,7 @@ describe("Prizes API resource", function () {
         .get(`/api/prizes/${familyCode}`)
         .set("Authorization", `Bearer ${token}`)
         .then(function (_res) {
+          console.log("[[[ _res, GET endpoint ]]]", _res.should);
           res = _res;
           res.should.have.status(200);
           res.should.be.json;
