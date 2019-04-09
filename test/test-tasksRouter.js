@@ -7,6 +7,8 @@ const { app, runServer, closeServer } = require("../server");
 const { Task } = require("../models/taskModel");
 const { TEST_DATABASE_URL } = require("../config");
 
+const { Family } = require("../models/familyModel");
+
 const should = chai.should();
 chai.use(chaiHttp);
 
@@ -58,6 +60,8 @@ describe("Tasks API resource", function () {
     return runServer(TEST_DATABASE_URL);
   });
 
+  let currentUser;
+
   beforeEach(function () {
     // Need to create a User and seed the database
     return User.hashPassword(password).then(password =>
@@ -68,7 +72,29 @@ describe("Tasks API resource", function () {
         familyCode
       })
     )
-    .then(seedTasks);
+    .then(user => {
+      currentUser = user;
+      return user;
+    })
+    .then(seedTasks)
+    .then(tasks => {
+      let taskIds = tasks.map(task => task.id);
+      console.log("[[[ TASKS ]]]", taskIds)
+      return Family.findOneAndUpdate(
+        { familyCode },
+        {
+          $set: {
+            familyCode,
+            currentTasks: taskIds
+          }
+        },
+        {
+          upsert: true,
+          new: true,
+          setDefaultsOnInsert: true
+        }
+      )
+    });
   });
 
   afterEach(function () {
