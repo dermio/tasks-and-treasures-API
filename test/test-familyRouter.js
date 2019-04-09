@@ -62,7 +62,7 @@ describe("Prizes API resource", function () {
 
 
   // Remove the `only` from `descibe.only` so all the tests run
-  describe.only("PUT, /:familyCode/finalize", function () {
+  describe("PUT, /:familyCode/finalize", function () {
     it("should finalize tasks list by parent", function () {
       // Setup Family, and a bunch of tasks.
       // Confirm if `tasksFinalized` False on the family,
@@ -101,7 +101,7 @@ describe("Prizes API resource", function () {
           .set("Authorization", `Bearer ${token}`);
       })
       .then((res) => {
-        res.should.have.status(204);
+        res.should.have.status(200);
         return Family
           .findOne({ familyCode })
           .then(family => {
