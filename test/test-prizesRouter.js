@@ -79,9 +79,9 @@ describe.only("Prizes API resource", function () {
       return user;
     })
     .then(seedPrizes)
-    .then(prizes => {
-      let prize = prizes;
-      console.log("[[[ PRIZE, beforeEach() ]]]", prize);
+    .then(prizesArr => {
+      let currentPrize = prizesArr[0];
+      console.log("[[[ CURRENT PRIZE, beforeEach() ]]]", currentPrize);
 
       /* The prize document was successfully created by calling seedPrizes
       in the prior then() method.
@@ -100,7 +100,7 @@ describe.only("Prizes API resource", function () {
         {
           $set: {
             familyCode,
-            prize
+            currentPrize // Old value => prize
           }
         },
         {
@@ -166,19 +166,15 @@ describe.only("Prizes API resource", function () {
         .get(`/api/prizes/${familyCode}`)
         .set("Authorization", `Bearer ${token}`)
         .then(function (_res) {
-          console.log("[[[ _res, GET endpoint ]]]", _res.should);
+          // console.log("[[[ _res, GET endpoint ]]]", _res.body);
           res = _res;
+          console.log(res.body);
           res.should.have.status(200);
           res.should.be.json;
-          res.body.should.be.a("array");
-          res.body.forEach(prize => {
-            prize.should.be.a("object");
-            prize.should.include.keys("prizeName", "familyCode");
-          });
-          return Prize.count();
-        })
-        .then(function (count) {
-          res.body.length.should.equal(count);
+          res.body.should.be.a("object");
+
+          // Key should be "currentPrize", not "prizeName"
+          res.body.should.include.keys(["familyCode", "prizeName"]);
         });
     });
   });
