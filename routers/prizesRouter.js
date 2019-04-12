@@ -25,6 +25,14 @@ router.get("/:familyCode", jwtAuth, (req, res) => {
       const toRespond = family.currentPrize
         ? family.currentPrize.serialize() : null;
 
+      /* The correct new code
+      if (toRespond) {
+        return res.json(toRespond);
+      } else {
+        return res.status(404).end();
+      }
+      */
+
       console.log("FAMILY route", family)
       res.json(toRespond);
     })
