@@ -25,7 +25,7 @@ router.get("/:familyCode", jwtAuth, (req, res) => {
       const toRespond = family.currentPrize
         ? family.currentPrize.serialize() : null;
 
-      /* The correct new code
+      /* The correct new code, with nicer response status 404
       if (toRespond) {
         return res.json(toRespond);
       } else {
