@@ -48,7 +48,7 @@ function generatePrizeData() {
   };
 }
 
-describe.only("Prizes API resource", function () {
+describe("Prizes API resource", function () {
   const username = "exampleUser";
   const password = "examplePass";
   const role = "Example";
