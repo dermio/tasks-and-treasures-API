@@ -22,6 +22,10 @@ $ npm install
 $ npm start
 ```
 
+The app requires the creation of a user with the _**role**_ of **parent**,
+and another user with the _**role**_ of **child**. Both users need to have
+the same **family code**.
+
 ### Built With
 #### Front End
 * React
