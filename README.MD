@@ -28,6 +28,7 @@ $ npm start
 * Redux
 * React Router
 * Redux Form
+* React Joyride
 
 #### Back End
 * Node.js and npm
