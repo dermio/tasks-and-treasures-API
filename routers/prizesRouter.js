@@ -117,14 +117,20 @@ router.delete("/:id", jwtAuth, (req, res) => {
           .json({ message: "DELETE Prize, tasksFinalized is already True" });
       }
 
-      return Prize.findByIdAndRemove(req.params.id)
+      family.currentPrize = null;
+      return family
+        .save()
         .then(() => {
-          console.log(`Deleted prize with id \`${req.params.id}\``);
-          return res.status(204).end();
-        })
-        .catch(err => {
-          return res.status(500).json({message: "Internal server error"});
+          return Prize.findByIdAndRemove(req.params.id)
+          .then(() => {
+            console.log(`Deleted prize with id \`${req.params.id}\``);
+            return res.status(204).end();
+          })
+          .catch(err => {
+            return res.status(500).json({message: "Internal server error"});
+          });
         });
+
     });
 
 });

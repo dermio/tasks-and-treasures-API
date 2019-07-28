@@ -138,14 +138,25 @@ router.delete("/:id", jwtAuth, (req, res) => {
           .json({ message: "DELETE Task, tasksFinalized is already True" });
       }
 
-      return Task.findByIdAndRemove(req.params.id)
-      .then(() => {
-        console.log(`Deleted task with id \`${req.params.id}\``);
-        return res.status(204).end();
-      })
-      .catch(err => {
-        return res.status(500).json({ message: "Internal server error" });
-      });
+      family.currentTasks = family.currentTasks.filter(taskId => 
+        taskId.toString() !== req.params.id
+      );
+
+      // family.currentTasks = []; // Delete this later
+      let saveFamily;
+      family.save()
+        .then(_saveFamily => {
+          saveFamily = _saveFamily;
+          return Task.findByIdAndRemove(req.params.id)
+          .then(() => {
+            console.log(`Deleted task with id \`${req.params.id}\``);
+            return res.status(204).end();
+          })
+          .catch(err => {
+            return res.status(500).json({ message: "Internal server error" });
+          });
+        });
+
     });
 
 });
