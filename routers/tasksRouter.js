@@ -125,7 +125,7 @@ router.post("/", jsonParser, jwtAuth, (req, res) => {
 // DELETE task, for Parent User
 router.delete("/:id", jwtAuth, (req, res) => {
   // Before Deleting Task, make sure Family.tasksFinalized is not TRUE (false)
-  Family.findOneAndUpdate(
+  return Family.findOneAndUpdate(
     { familyCode: req.user.familyCode },
     {
       $set: { familyCode: req.user.familyCode }
@@ -144,7 +144,7 @@ router.delete("/:id", jwtAuth, (req, res) => {
 
       // family.currentTasks = []; // Delete this later
       let saveFamily;
-      family.save()
+      return family.save()
         .then(_saveFamily => {
           saveFamily = _saveFamily;
           return Task.findByIdAndRemove(req.params.id)
@@ -157,6 +157,9 @@ router.delete("/:id", jwtAuth, (req, res) => {
           });
         });
 
+    })
+    .catch(err => {
+      return res.status(500).json({ message: "Internal server error" });
     });
 
 });
@@ -215,6 +218,10 @@ router.put("/:id", jsonParser, jwtAuth, (req, res) => {
             .json({ message: "Internal server error" });
         });
     })
+    .catch(err => {
+      return res.status(500)
+        .json({ message: "Internal server error" });
+    });
 
 });
 
@@ -303,6 +310,7 @@ router.get("/children/status", jwtAuth, (req, res) => {
     .then(users => {
       res.json({ users });
     })
+    .catch(err => res.status(500).json({ message: "Internal server error" }));
 });
 
 

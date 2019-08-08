@@ -61,7 +61,12 @@ const jwtStrategy = new JwtStrategy(
     algorithms: ["HS256"]
   },
   (payload, done) => {
-    done(null, payload.user);
+    User.findOne({
+      username: payload.user.username
+    })
+    .then(u => {
+      return done(null, u)
+    })
   }
 );
 

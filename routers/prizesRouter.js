@@ -131,6 +131,9 @@ router.delete("/:id", jwtAuth, (req, res) => {
           });
         });
 
+    })
+    .catch(err => {
+      return res.status(500).json({message: "Internal server error"});
     });
 
 });

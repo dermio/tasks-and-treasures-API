@@ -52,7 +52,7 @@ router.put("/:familyCode/finalize", jwtAuth, (req, res) => {
 
   console.log("[[[ /:familyCode/finalize ]]]");
 
-  Family
+  return Family
     .findOneAndUpdate(
       { familyCode: req.params.familyCode },
       {
