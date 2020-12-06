@@ -38,6 +38,11 @@ The app requires the creation of a user with the _**role**_ of **parent**,
 and another user with the _**role**_ of **child**. Both users need to have
 the same **family code**.
 
+#### Try the demo user accounts
+Parent user: `lincoln_parent`  
+Child user: `lincoln_child1`  
+Password for both users: `lincoln12345`
+
 ### Built With
 #### Front End
 * React
