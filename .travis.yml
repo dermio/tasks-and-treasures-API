@@ -3,7 +3,7 @@ node_js: lts/*
 services:
 - mongodb
 before_deploy:
-  - rvm $(travis_internal_ruby) --fuzzy do ruby -S gem install faraday -v 1.8.0
+  - rvm $(travis_internal_ruby) --fuzzy do ruby -S gem install faraday -v 1.9.3
 deploy:
   provider: heroku
   api_key:
