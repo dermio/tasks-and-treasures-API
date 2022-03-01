@@ -1,7 +1,7 @@
 const chai = require("chai");
 const chaiHttp = require("chai-http");
 const mongoose = require("mongoose");
-const faker = require("faker");
+const { faker } = require("@faker-js/faker");
 
 const { app, runServer, closeServer } = require("../server");
 const { Task } = require("../models/taskModel");
